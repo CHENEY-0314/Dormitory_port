@@ -18,20 +18,20 @@ import javax.servlet.http.HttpServletResponse;
 
 public class DBManager extends HttpServlet {
 	private static final long serialVersionUID = -2692489887367146591L;
-	ServletConfig config;//¶¨ÒåÒ»¸öServletConfig¶ÔÏó
-	private static String username;//¶¨ÒåÊı¾İ¿âÓÃ»§Ãû
-	private static String password;//¶¨ÒåÊı¾İ¿âÁ¬½ÓÃÜÂë
-	private static String url;//¶¨ÒåÊı¾İ¿âÁ¬½ÓURL
-	private static Connection connection;//¶¨ÒåÁ¬½Ó
- 
+	ServletConfig config;//å®šä¹‰ä¸€ä¸ªServletConfigå¯¹è±¡
+	private static String username;//å®šä¹‰æ•°æ®åº“ç”¨æˆ·å
+	private static String password;//å®šä¹‰æ•°æ®åº“è¿æ¥å¯†ç 
+	private static String url;//å®šä¹‰æ•°æ®åº“è¿æ¥URL
+	private static Connection connection;//å®šä¹‰è¿æ¥
+	// æµ‹æµ‹æµ‹æµ‹æµ‹æµ‹æµ‹æµ‹è¯•è¯•è¯•è¯•æµ‹æµ‹æµ‹æµ‹æµ‹æµ‹æµ‹æµ‹è¯•è¯•è¯•è¯•æµ‹æµ‹æµ‹æµ‹æµ‹æµ‹æµ‹æµ‹è¯•è¯•è¯•è¯•æµ‹æµ‹æµ‹æµ‹æµ‹æµ‹æµ‹æµ‹è¯•è¯•è¯•è¯•
 	@Override
 	public void init(ServletConfig config) throws ServletException {
-		this.config = config; //»ñÈ¡ÅäÖÃĞÅÏ¢
-		username = config.getInitParameter("DBUsername"); //»ñÈ¡Êı¾İ¿âÓÃ»§Ãû
-		password = config.getInitParameter("DBPassword"); //»ñÈ¡Êı¾İ¿âÁ¬½ÓÃÜÂë
-		url = config.getInitParameter("ConnectionURL");//»ñÈ¡Êı¾İ¿âÁ¬½ÓURL
+		this.config = config; //è·å–é…ç½®ä¿¡æ¯
+		username = config.getInitParameter("DBUsername"); //è·å–æ•°æ®åº“ç”¨æˆ·å
+		password = config.getInitParameter("DBPassword"); //è·å–æ•°æ®åº“è¿æ¥å¯†ç 
+		url = config.getInitParameter("ConnectionURL");//è·å–æ•°æ®åº“è¿æ¥URL
 		}
-	//Á¬½ÓÊı¾İ¿â
+	//è¿æ¥æ•°æ®åº“
 	public static Connection getConnection() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
@@ -41,7 +41,7 @@ public class DBManager extends HttpServlet {
 				}
 		return connection;
 		}
-//¹Ø±ÕÁ¬½Ó£¬ResultSetÊÇ·µ»ØÊı¾İ¿âµÄ²éÑ¯ÄÚÈİ¡£
+//å…³é—­è¿æ¥ï¼ŒResultSetæ˜¯è¿”å›æ•°æ®åº“çš„æŸ¥è¯¢å†…å®¹ã€‚
 	public static void closeAll(Connection connection, Statement statement,
 			ResultSet resultSet) {
 		try {
@@ -58,7 +58,7 @@ public class DBManager extends HttpServlet {
 				Logger.getLogger(DBManager.class.getName()).log(Level.SEVERE, null, ex);
 				}
 		}
-//Ã»ÓĞResultSetµÄÊÇ¹Ø±ÕĞŞ¸Ä¡¢Ôö¼ÓÊı¾İ²Ù×÷£¨ÒòÎª²»ÓÃ·µ»Ø½á¹û£©
+//æ²¡æœ‰ResultSetçš„æ˜¯å…³é—­ä¿®æ”¹ã€å¢åŠ æ•°æ®æ“ä½œï¼ˆå› ä¸ºä¸ç”¨è¿”å›ç»“æœï¼‰
 	public static void closeAll(Connection connection, Statement statement) {
 		try {
 			if (statement != null) {

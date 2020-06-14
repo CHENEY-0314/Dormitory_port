@@ -12,27 +12,27 @@ import DBManagerr.DBManager;
 
 public class studentDAO {
 
-	//²éÑ¯ÕË»§ÊÇ·ñ´æÔÚ£¬´æÔÚ·µ»Ø¾ßÌåstudent¶ÔÏó£¬·ñÔòÎª¿Õ¡£
-		public static student queryUser(String StudentID) {  //StudentIDÊÇÑ§ÉúÑ§ºÅ
-			//Á¬½ÓÊı¾İ¿â
+	//æŸ¥è¯¢è´¦æˆ·æ˜¯å¦å­˜åœ¨ï¼Œå­˜åœ¨è¿”å›å…·ä½“studentå¯¹è±¡ï¼Œå¦åˆ™ä¸ºç©ºã€‚
+		public static student queryUser(String StudentID) {  //StudentIDæ˜¯å­¦ç”Ÿå­¦å·
+			//è¿æ¥æ•°æ®åº“
 			Connection connection = DBManager.getConnection();
 			PreparedStatement preparedStatement = null;
 			ResultSet resultSet = null;
 	 
-			//SQL²éÑ¯Óï¾ä
+			//SQLæŸ¥è¯¢è¯­å¥
 			StringBuilder sqlStatement = new StringBuilder();
-			sqlStatement.append("select * from StudentLogin where ID=?");        //ÎÊºÅ£¿µÄµØ·½»á±»Ñ§ºÅÌæ»»
+			sqlStatement.append("select * from StudentLogin where ID=?");        //é—®å·ï¼Ÿçš„åœ°æ–¹ä¼šè¢«å­¦å·æ›¿æ¢
 	    	
-			//ÉèÖÃÊı¾İ¿âµÄ×Ö¶ÎÖµ
+			//è®¾ç½®æ•°æ®åº“çš„å­—æ®µå€¼
 			try {
 				preparedStatement = connection.prepareStatement(sqlStatement.toString());
 				preparedStatement.setString(1, StudentID);
 	 
-				resultSet = preparedStatement.executeQuery();                  //Ö´ĞĞ²éÕÒÓï¾ä£¬»ñµÃ·µ»ØĞÅÏ¢
+				resultSet = preparedStatement.executeQuery();                  //æ‰§è¡ŒæŸ¥æ‰¾è¯­å¥ï¼Œè·å¾—è¿”å›ä¿¡æ¯
 				
 				student user = new student();
-				if (resultSet.next()) {                                        //Éú³Éstudent¶ÔÏó²¢·µ»Ø
-					user.setStudentNumber(resultSet.getString("ID"));           //ÉèÖÃÕË»§¡¢ÃÜÂë£¬¸ù¾İ·µ»ØµÄÄÚÈİ»¹¿ÉÒÔÉèÖÃÆäËûĞÅÏ¢
+				if (resultSet.next()) {                                        //ç”Ÿæˆstudentå¯¹è±¡å¹¶è¿”å›
+					user.setStudentNumber(resultSet.getString("ID"));           //è®¾ç½®è´¦æˆ·ã€å¯†ç ï¼Œæ ¹æ®è¿”å›çš„å†…å®¹è¿˜å¯ä»¥è®¾ç½®å…¶ä»–ä¿¡æ¯
 					user.setPassword(resultSet.getString("PASSWORD"));
 					return user;
 					} else {
@@ -42,7 +42,7 @@ public class studentDAO {
 					Logger.getLogger(studentDAO.class.getName()).log(Level.SEVERE, null, ex);
 					return null;
 					} finally {
-						DBManager.closeAll(connection, preparedStatement, resultSet);               //¹Ø±ÕÁ¬½Ó
+						DBManager.closeAll(connection, preparedStatement, resultSet);               //å…³é—­è¿æ¥
 						}
 			}
 		

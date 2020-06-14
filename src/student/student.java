@@ -2,11 +2,11 @@ package student;
 
 public class student {
 	
-	//学号
+	//瀛﹀彿
     private String StudentNumber;
-	//用户名称
+	//鐢ㄦ埛鍚嶇О
     private String StudentName;
-    //用户密码
+    //鐢ㄦ埛瀵嗙爜
     private String Password;
     
     public String getStudentNumber() {
