@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
+  <display-name>Dormitory</display-name>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>DBManager</servlet-name>
+    <servlet-class>DBManagerr.DBManager</servlet-class>
+    <init-param>
+      <param-name>DBUsername</param-name>
+      <param-value>root1</param-value>
+    </init-param>
+    <init-param>
+      <param-name>DBPassword</param-name>
+      <param-value>1qwer!ASDF</param-value>
+    </init-param>
+    <init-param>
+      <param-name>ConnectionURL</param-name>
+      <param-value>jdbc:mysql://39.97.114.188:3306/Dormitory</param-value>
+    </init-param>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>StuLoginServlet</servlet-name>
+    <servlet-class>student.StuLoginServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>DBManager</servlet-name>
+    <url-pattern>/servlet/DBManager</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>StuLoginServlet</servlet-name>
+    <url-pattern>/servlet/StuLoginServlet</url-pattern>
+  </servlet-mapping>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+</web-app>
