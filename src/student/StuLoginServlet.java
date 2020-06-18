@@ -16,7 +16,7 @@ public class StuLoginServlet extends HttpServlet {
 
 	/*
 	 * 先：http://localhost:8080/Dormitory/servlet/DBManager
-	 * 后：http://localhost:8080/Dormitory/servlet/StuLoginServlet?s_id=201830000001&password=123456
+	 * 后：http://localhost:8080/Dormitory/servlet/StuLoginServlet?s_id=2018301010101&password=123456
 	*/
 	
 	private static final long serialVersionUID = 1L;

@@ -32,7 +32,7 @@ public class studentDAO {
 				
 				student user = new student();
 				if (resultSet.next()) {                                        //生成student对象并返回
-					user.setStudentNumber(resultSet.getString("s_id"));           //设置账户、密码，根据返回的内容还可以设置其他信息
+					user.setStudentNumber(resultSet.getString("s_id"));        //设置账户、密码，根据返回的内容还可以设置其他信息
 					user.setPassword(resultSet.getString("password"));
 					return user;
 					} else {
