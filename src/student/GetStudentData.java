@@ -10,7 +10,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONObject;
 
-//此接口用于 根据学号查询学生的姓名、性别、宿舍（楼号、宿舍号、床位号）
+
+/*
+ * 此接口用于 根据学号查询学生的姓名、性别、宿舍（楼号、宿舍号、床位号）
+ * http://localhost:8080/Dormitory/servlet/GetStudentData?s_id=201830660178&password=123456
+*/
+
 public class GetStudentData extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)

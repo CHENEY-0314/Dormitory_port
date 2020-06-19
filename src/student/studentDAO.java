@@ -45,7 +45,7 @@ public class studentDAO {
 					Logger.getLogger(studentDAO.class.getName()).log(Level.SEVERE, null, ex);
 					return null;
 					} finally {
-						DBManager.closeAll(connection, preparedStatement, resultSet);               //关闭连接
+						DBManager.closeAll(connection, preparedStatement, resultSet);               //鍏抽棴杩炴帴
 						}
 			}
 		
@@ -74,6 +74,9 @@ public class studentDAO {
 	        		message.put("s_id", resultSet.getString("s_id"));
 	        		message.put("s_name", resultSet.getString("s_name"));
 	        		message.put("sex", resultSet.getString("sex"));
+	        		message.put("college", resultSet.getString("college"));
+	        		message.put("contact", resultSet.getString("contact"));
+
 	        		message.put("building", resultSet.getString("building"));
 	        		message.put("room_num", resultSet.getString("room_num"));
 	        		message.put("bed_num", resultSet.getString("bed_num"));
@@ -85,7 +88,77 @@ public class studentDAO {
 	        
 	        DBManager.closeAll(connection, preparedStatement, resultSet);
 	        return jsonObject;
-	        
 	}
+		
+		//更新用户数据（用于添加自己的换宿意向）
+		public static void JoinIntention(String s_id){
+		//获得数据库的连接对象
+		Connection connection = DBManager.getConnection();
+		PreparedStatement preparedStatement = null;
+		//生成SQL代码
+		StringBuilder sqlStatement = new StringBuilder();
+		sqlStatement.append("insert into Intention (s_id) values (?)");
+		//设置数据库的字段值
+		try {
+			preparedStatement = connection.prepareStatement(sqlStatement.toString());
+			preparedStatement.setString(1, s_id);
+			preparedStatement.executeUpdate();
+			} catch (SQLException ex) {
+			} finally {
+				DBManager.closeAll(connection, preparedStatement);
+				}
+		}
+		
+		//判断是否已经有换宿意向
+		public static JSONObject IfInIntention(String s_id){
+			//SQL查询语句
+			String in = null;
+			StringBuilder sql1 = new StringBuilder();
+			sql1.append("select s_id from Intention where s_id=?");        //问号？的地方会被s_id替换
+				
+			Connection connection = DBManager.getConnection();
+			PreparedStatement preparedStatement = null;
+		    ResultSet resultSet = null;
+
+		    Map<String, String> message = new HashMap<>();
+		    JSONObject jsonObject = new JSONObject();
+		    
+		    
+		    try {
+				preparedStatement = connection.prepareStatement(sql1.toString());
+				preparedStatement.setString(1, s_id);
+				resultSet = preparedStatement.executeQuery();                  //执行查找语句，获得返回信息
+				
+		    	if (resultSet.next()) {                              
+		    		jsonObject.put("result", "true");  //已经有意向了
+		    		} else {
+		    			jsonObject.put("result", "false");  //没有意向
+		    			}
+		    	} catch (SQLException ex) {
+		    		Logger.getLogger(studentDAO.class.getName()).log(Level.SEVERE, null, ex);
+		        	}
+		    DBManager.closeAll(connection, preparedStatement, resultSet);
+		    return jsonObject;
+		    }
+			
+		//取消换宿意向
+		public static void ExitIntention(String s_id){
+			//获得数据库的连接对象
+			Connection connection = DBManager.getConnection();
+			PreparedStatement preparedStatement = null;
+			//生成SQL代码
+			StringBuilder sqlStatement = new StringBuilder();
+			sqlStatement.append("delete from Intention where s_id=?");
+			//设置数据库的字段值
+			try {
+				preparedStatement = connection.prepareStatement(sqlStatement.toString());
+				preparedStatement.setString(1, s_id);
+				preparedStatement.executeUpdate();
+				} catch (SQLException ex) {
+				} finally {
+					DBManager.closeAll(connection, preparedStatement);
+					}
+			}
+		
 	
 }
