@@ -15,27 +15,27 @@ import DBManagerr.DBManager;
 
 public class studentDAO {
 
-	//查询账户是否存在，存在返回具体student对象，否则为空。
-		public static student queryUser(String s_id) {  //StudentID是学生学号
-			//连接数据库
+	//鏌ヨ璐︽埛鏄惁瀛樺湪锛屽瓨鍦ㄨ繑鍥炲叿浣搒tudent瀵硅薄锛屽惁鍒欎负绌恒�
+		public static student queryUser(String s_id) {  //StudentID鏄鐢熷鍙�
+			//杩炴帴鏁版嵁搴�
 			Connection connection = DBManager.getConnection();
 			PreparedStatement preparedStatement = null;
 			ResultSet resultSet = null;
 	 
-			//SQL查询语句
+			//SQL鏌ヨ璇彞
 			StringBuilder sqlStatement = new StringBuilder();
-			sqlStatement.append("select * from StudentLogin where s_id=?");        //问号？的地方会被学号替换
+			sqlStatement.append("select * from StudentLogin where s_id=?");        //闂彿锛熺殑鍦版柟浼氳瀛﹀彿鏇挎崲
 	    	
-			//设置数据库的字段值
+			//璁剧疆鏁版嵁搴撶殑瀛楁鍊�
 			try {
 				preparedStatement = connection.prepareStatement(sqlStatement.toString());
 				preparedStatement.setString(1, s_id);
 	 
-				resultSet = preparedStatement.executeQuery();                  //执行查找语句，获得返回信息
+				resultSet = preparedStatement.executeQuery();                  //鎵ц鏌ユ壘璇彞锛岃幏寰楄繑鍥炰俊鎭�
 				
 				student user = new student();
-				if (resultSet.next()) {                                        //生成student对象并返回
-					user.setStudentNumber(resultSet.getString("s_id"));        //设置账户、密码，根据返回的内容还可以设置其他信息
+				if (resultSet.next()) {                                        //鐢熸垚student瀵硅薄骞惰繑鍥�
+					user.setStudentNumber(resultSet.getString("s_id"));        //璁剧疆璐︽埛銆佸瘑鐮侊紝鏍规嵁杩斿洖鐨勫唴瀹硅繕鍙互璁剧疆鍏朵粬淇℃伅
 					user.setPassword(resultSet.getString("password"));
 					return user;
 					} else {
@@ -45,16 +45,16 @@ public class studentDAO {
 					Logger.getLogger(studentDAO.class.getName()).log(Level.SEVERE, null, ex);
 					return null;
 					} finally {
-						DBManager.closeAll(connection, preparedStatement, resultSet);               //关闭连接
+						DBManager.closeAll(connection, preparedStatement, resultSet);               //鍏抽棴杩炴帴
 						}
 			}
 
-	//����ѧ�Ų�ѯѧ�����������Ա����ᣨ¥�š�����š���λ�ţ�������json��ʽ��
+	//锟斤拷锟斤拷学锟脚诧拷询学锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟皆憋拷锟斤拷锟结（楼锟脚★拷锟斤拷锟斤拷拧锟斤拷锟轿伙拷牛锟斤拷锟斤拷锟斤拷锟絡son锟斤拷式锟斤拷
 		public static JSONObject GetStudentByStuId(String id) {
 			
-			//SQL��ѯ���
+			//SQL锟斤拷询锟斤拷锟�
 			StringBuilder sql1 = new StringBuilder();
-			sql1.append("select * from Student t1 inner join LiveRecord t2 on t1.s_id=t2.s_id where t1.s_id=?");        //�ʺţ��ĵط��ᱻѧ��id�滻
+			sql1.append("select * from Student t1 inner join LiveRecord t2 on t1.s_id=t2.s_id where t1.s_id=?");        //锟绞号ｏ拷锟侥地凤拷锟结被学锟斤拷id锟芥换
 			
 			Connection connection = DBManager.getConnection();
 			PreparedStatement preparedStatement = null;
@@ -80,7 +80,7 @@ public class studentDAO {
 	        		message.put("building", resultSet.getString("building"));
 	        		message.put("room_num", resultSet.getString("room_num"));
 	        		message.put("bed_num", resultSet.getString("bed_num"));
-	        		jsonObject.put("���", message);
+	        		jsonObject.put("结果", message);
 	        		}
 	        	} catch (SQLException ex) {
 		Logger.getLogger(studentDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -90,15 +90,15 @@ public class studentDAO {
 	        return jsonObject;
 	}
 		
-		//�����û����ݣ���������Լ��Ļ�������
+		//进入换宿意向
 		public static void JoinIntention(String s_id){
-		//������ݿ�����Ӷ���
+		//锟斤拷锟斤拷锟斤拷菘锟斤拷锟斤拷锟接讹拷锟斤拷
 		Connection connection = DBManager.getConnection();
 		PreparedStatement preparedStatement = null;
-		//����SQL����
+		//锟斤拷锟斤拷SQL锟斤拷锟斤拷
 		StringBuilder sqlStatement = new StringBuilder();
 		sqlStatement.append("insert into Intention (s_id) values (?)");
-		//�������ݿ���ֶ�ֵ
+		//锟斤拷锟斤拷锟斤拷锟捷匡拷锟斤拷侄锟街�
 		try {
 			preparedStatement = connection.prepareStatement(sqlStatement.toString());
 			preparedStatement.setString(1, s_id);
@@ -109,30 +109,28 @@ public class studentDAO {
 				}
 		}
 		
-		//�ж��Ƿ��Ѿ��л�������
+		//判断是否已经加入换宿意向
 		public static JSONObject IfInIntention(String s_id){
-			//SQL��ѯ���
-			String in = null;
+			//SQL锟斤拷询锟斤拷锟�
 			StringBuilder sql1 = new StringBuilder();
-			sql1.append("select s_id from Intention where s_id=?");        //�ʺţ��ĵط��ᱻs_id�滻
+			sql1.append("select s_id from Intention where s_id=?");        //锟绞号ｏ拷锟侥地凤拷锟结被s_id锟芥换
 				
 			Connection connection = DBManager.getConnection();
 			PreparedStatement preparedStatement = null;
 		    ResultSet resultSet = null;
 
-		    Map<String, String> message = new HashMap<>();
 		    JSONObject jsonObject = new JSONObject();
 		    
 		    
 		    try {
 				preparedStatement = connection.prepareStatement(sql1.toString());
 				preparedStatement.setString(1, s_id);
-				resultSet = preparedStatement.executeQuery();                  //ִ�в�����䣬��÷�����Ϣ
+				resultSet = preparedStatement.executeQuery();                  //执锟叫诧拷锟斤拷锟斤拷洌拷锟矫凤拷锟斤拷锟斤拷息
 				
 		    	if (resultSet.next()) {                              
-		    		jsonObject.put("result", "true");  //�Ѿ���������
+		    		jsonObject.put("result", "true");  //锟窖撅拷锟斤拷锟斤拷锟斤拷锟斤拷
 		    		} else {
-		    			jsonObject.put("result", "false");  //û������
+		    			jsonObject.put("result", "false");  //没锟斤拷锟斤拷锟斤拷
 		    			}
 		    	} catch (SQLException ex) {
 		    		Logger.getLogger(studentDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -141,15 +139,15 @@ public class studentDAO {
 		    return jsonObject;
 		    }
 			
-		//ȡ����������
+		//退出换宿意向
 		public static void ExitIntention(String s_id){
-			//������ݿ�����Ӷ���
+			//锟斤拷锟斤拷锟斤拷菘锟斤拷锟斤拷锟接讹拷锟斤拷
 			Connection connection = DBManager.getConnection();
 			PreparedStatement preparedStatement = null;
-			//����SQL����
+			//锟斤拷锟斤拷SQL锟斤拷锟斤拷
 			StringBuilder sqlStatement = new StringBuilder();
 			sqlStatement.append("delete from Intention where s_id=?");
-			//�������ݿ���ֶ�ֵ
+			//锟斤拷锟斤拷锟斤拷锟捷匡拷锟斤拷侄锟街�
 			try {
 				preparedStatement = connection.prepareStatement(sqlStatement.toString());
 				preparedStatement.setString(1, s_id);
@@ -157,6 +155,36 @@ public class studentDAO {
 				} catch (SQLException ex) {
 				} finally {
 					DBManager.closeAll(connection, preparedStatement);
+					}
+			}
+		
+		//获取当前学生的通知
+		@SuppressWarnings("finally")
+		public static JSONObject GetNote(String s_id){
+			Connection connection = DBManager.getConnection();
+			PreparedStatement preparedStatement = null;
+
+			//select * from Note where target_id=? or target_id is null
+			StringBuilder sqlStatement = new StringBuilder();
+			sqlStatement.append("select * from `Note` where `target_id` is null or `target_id` = '' or `target_id` = ?");
+		    ResultSet resultSet = null;
+	        Map<String, String> message = new HashMap<>();
+	        JSONObject jsonObject = new JSONObject();
+			try {
+				preparedStatement = connection.prepareStatement(sqlStatement.toString());
+				preparedStatement.setString(1,s_id);
+				resultSet = preparedStatement.executeQuery();
+	        	for(int i = 1;resultSet.next();i++) {
+	        		message.put("code", resultSet.getString("code"));
+	        		message.put("head", resultSet.getString("head"));
+	        		message.put("content", resultSet.getString("content"));
+	        		message.put("time", resultSet.getString("time"));
+	        		jsonObject.put(i, message);
+	        		}
+				} catch (SQLException ex) {
+				} finally {
+					DBManager.closeAll(connection, preparedStatement);
+			        return jsonObject;
 					}
 			}
 		
