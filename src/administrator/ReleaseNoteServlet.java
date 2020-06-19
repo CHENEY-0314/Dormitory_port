@@ -44,7 +44,7 @@ private static final long serialVersionUID = 3L;
 			Map<String, String> params = new HashMap<>();
 			JSONObject jsonObject = new JSONObject();
 
-			int result = ReleaseNoteDAO.noteRelease(code, head, content, time);
+			int result = AdmDAO.noteRelease(code, head, content, time);
  
 			if (result > 0) {
 				params.put("Result", "Success: "+String.valueOf(content.length()));
