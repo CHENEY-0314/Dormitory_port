@@ -39,7 +39,7 @@ public class MainAppDAO {
 			} else return false;
 		}
 		catch (SQLException ex) {
-			Logger.getLogger(studentDAO.class.getName()).log(Level.SEVERE, null, ex);
+			Logger.getLogger(MainAppDAO.class.getName()).log(Level.SEVERE, null, ex);
 				return false;
 			} finally {
 				DBManager.closeAll(connection, preparedStatement, resultSet);               //关闭连接
