@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import student.studentDAO;
 import DBManagerr.DBManager;
 
 public class ReleaseNoteDAO {
@@ -15,31 +14,32 @@ public class ReleaseNoteDAO {
 	
 	public static int noteRelease(String code, String head, String content, String time){
 		
-		//è¿æ¥æ•°æ®åº“
+		//Á¬½ÓÊı¾İ¿â
 		Connection connection = DBManager.getConnection();
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		
-		//SQLæŸ¥è¯¢è¯­å¥
+		//SQL²éÑ¯Óï¾ä
 		StringBuilder sqlStatement = new StringBuilder();
-		sqlStatement.append("insert into Note values(?, ?, ?, ?)");        //é—®å·ï¼Ÿçš„åœ°æ–¹ä¼šè¢«å­¦å·æ›¿æ¢
+		sqlStatement.append("insert into Note values(?, ?, ?, ?, ?)");        //ÎÊºÅ£¿µÄµØ·½»á±»Ñ§ºÅÌæ»»
 		
-		//è®¾ç½®å­—æ®µå€¼
+		//ÉèÖÃ×Ö¶ÎÖµ
 				try {
 					preparedStatement = connection.prepareStatement(sqlStatement.toString());
 					preparedStatement.setString(1, code);
 					preparedStatement.setString(2, head);
 					preparedStatement.setString(3, content);
 					preparedStatement.setString(4, time);
+					preparedStatement.setString(5, "");
 		 
-					return preparedStatement.executeUpdate();                  //æ‰§è¡ŒæŸ¥æ‰¾è¯­å¥ï¼Œè·å¾—è¿”å›ä¿¡æ¯
+					return preparedStatement.executeUpdate();                  //Ö´ĞĞ²éÕÒÓï¾ä£¬»ñµÃ·µ»ØĞÅÏ¢
 					
 				}
 				catch (SQLException ex) {
 					Logger.getLogger(ReleaseNoteDAO.class.getName()).log(Level.SEVERE, null, ex);
 						return 0;
 					} finally {
-						DBManager.closeAll(connection, preparedStatement, resultSet);               //å…³é—­è¿æ¥
+						DBManager.closeAll(connection, preparedStatement, resultSet);               //¹Ø±ÕÁ¬½Ó
 					}
 	}
 }

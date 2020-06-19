@@ -1,4 +1,5 @@
 eclipse.preferences.version=1
+encoding//src/administrator/ReleaseNoteServlet.java=UTF-8
 encoding//src/student/ChangeIntentionServlet.java=UTF-8
 encoding//src/student/GetNoteServlet.java=UTF-8
 encoding//src/student/GetStudentData.java=UTF-8
