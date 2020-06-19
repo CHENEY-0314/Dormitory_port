@@ -16,7 +16,7 @@ import DBManagerr.DBManager;
 public class studentDAO {
 
 	//查询账户是否存在，存在返回具体student对象，否则为空。
-		public static student queryUser(String StudentID) {  //StudentID是学生学号
+		public static student queryUser(String s_id) {  //StudentID是学生学号
 			//连接数据库
 			Connection connection = DBManager.getConnection();
 			PreparedStatement preparedStatement = null;
@@ -24,20 +24,19 @@ public class studentDAO {
 	 
 			//SQL查询语句
 			StringBuilder sqlStatement = new StringBuilder();
-			sqlStatement.append("select * from StudentLogin where s_id=?");        //�ʺţ��ĵط��ᱻѧ���滻
+			sqlStatement.append("select * from StudentLogin where s_id=?");        //问号？的地方会被学号替换
 	    	
 			//设置数据库的字段值
 			try {
 				preparedStatement = connection.prepareStatement(sqlStatement.toString());
-				preparedStatement.setString(1, StudentID);
+				preparedStatement.setString(1, s_id);
 	 
 				resultSet = preparedStatement.executeQuery();                  //执行查找语句，获得返回信息
 				
 				student user = new student();
-				if (resultSet.next()) {                                        //����student���󲢷���
-					user.setStudentNumber(resultSet.getString("s_id"));           //�����˻������룬���ݷ��ص����ݻ���������������Ϣ
+				if (resultSet.next()) {                                        //生成student对象并返回
+					user.setStudentNumber(resultSet.getString("s_id"));        //设置账户、密码，根据返回的内容还可以设置其他信息
 					user.setPassword(resultSet.getString("password"));
-
 					return user;
 					} else {
 						return null;
@@ -49,7 +48,7 @@ public class studentDAO {
 						DBManager.closeAll(connection, preparedStatement, resultSet);               //关闭连接
 						}
 			}
-		
+
 	//����ѧ�Ų�ѯѧ�����������Ա����ᣨ¥�š�����š���λ�ţ�������json��ʽ��
 		public static JSONObject GetStudentByStuId(String id) {
 			
@@ -161,5 +160,6 @@ public class studentDAO {
 					}
 			}
 		
+
 	
 }

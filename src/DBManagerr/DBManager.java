@@ -23,7 +23,6 @@ public class DBManager extends HttpServlet {
 	private static String password;//定义数据库连接密码
 	private static String url;//定义数据库连接URL
 	private static Connection connection;//定义连接
-	// 测测测测测测测测试试试试测测测测测测测测试试试试测测测测测测测测试试试试测测测测测测测测试试试试
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		this.config = config; //获取配置信息
