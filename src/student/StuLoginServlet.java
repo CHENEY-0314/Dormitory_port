@@ -14,6 +14,11 @@ import net.sf.json.JSONObject;
 
 public class StuLoginServlet extends HttpServlet {
 
+	/*
+	 * 先：http://localhost:8080/Dormitory/servlet/DBManager
+	 * 后：http://localhost:8080/Dormitory/servlet/StuLoginServlet?s_id=201830660178&password=123456
+	*/
+	
 	private static final long serialVersionUID = 1L;
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -27,7 +32,7 @@ public class StuLoginServlet extends HttpServlet {
 		try (PrintWriter out = response.getWriter()) {
  
 			//获得请求中传来的学号和密码
-			String ID = request.getParameter("StudentID").trim();
+			String ID = request.getParameter("s_id").trim();
 			String password = request.getParameter("password").trim();
  
 			//密码验证结果
