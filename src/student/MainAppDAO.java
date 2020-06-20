@@ -7,21 +7,23 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.sf.json.JSONObject;
 import DBManagerr.DBManager;
 
 public class MainAppDAO {
+	
+	//Ìí¼ÓÎ¬ĞŞÉêÇë£¨Ñ§ºÅ¡¢Â¥ºÅ¡¢ËŞÉáºÅ¡¢Î¬ĞŞÊôĞÔ¡¢ÉêÇëÊ±¼ä¡¢ÁªÏµ·½Ê½¡¢±¸×¢¡¢Î¬ĞŞ×´Ì¬£©
 	public static boolean insertApp(String id, String b, String r, String m, String t, String c){
-		
-		//è¿æ¥æ•°æ®åº“
+
 		Connection connection = DBManager.getConnection();
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		int result = 0;
-		//SQLæŸ¥è¯¢è¯­å¥
+
 		StringBuilder sqlStatement = new StringBuilder();
-		sqlStatement.append("insert into MaintenanceRecord values (?,?,?,?,?,?,?)");        //é—®å·ï¼Ÿçš„åœ°æ–¹ä¼šè¢«å­¦å·æ›¿æ¢
+		sqlStatement.append("insert into MaintenanceRecord values (?,?,?,?,?,?,?)");    
 		
-		//è®¾ç½®æ•°æ®åº“çš„å­—æ®µå€¼
+
 		try {
 			preparedStatement = connection.prepareStatement(sqlStatement.toString());
 			preparedStatement.setString(1, id);
@@ -32,7 +34,7 @@ public class MainAppDAO {
 			preparedStatement.setString(6, c);
 			preparedStatement.setString(7, "1");
  
-			result = preparedStatement.executeUpdate();                  //æ‰§è¡ŒæŸ¥æ‰¾è¯­å¥ï¼Œè·å¾—è¿”å›ä¿¡æ¯
+			result = preparedStatement.executeUpdate();              
 			
 			if(result != 0){
 				return true;
@@ -42,7 +44,39 @@ public class MainAppDAO {
 			Logger.getLogger(MainAppDAO.class.getName()).log(Level.SEVERE, null, ex);
 				return false;
 			} finally {
-				DBManager.closeAll(connection, preparedStatement, resultSet);               //å…³é—­è¿æ¥
+				DBManager.closeAll(connection, preparedStatement, resultSet);   
 			}
 	}
+	
+	//ÅĞ¶Ïµ±Ç°ÓÃ»§ÊÇ·ñ¿ÉÒÔ½øĞĞÎ¬ĞŞÉêÇë£¨¼°µ±Ç°ÎŞ×´Ì¬Îª1-4µÄÉêÇë£©
+	public static JSONObject IfCanApply(String s_id){
+
+		StringBuilder sql1 = new StringBuilder();
+		sql1.append("select * from MaintenanceRecord where s_id=? and mainstate<>?");
+			
+		Connection connection = DBManager.getConnection();
+		PreparedStatement preparedStatement = null;
+	    ResultSet resultSet = null;
+
+	    JSONObject jsonObject = new JSONObject();
+	    
+	    try {
+			preparedStatement = connection.prepareStatement(sql1.toString());
+			preparedStatement.setString(1, s_id);
+			preparedStatement.setString(2, "5");
+
+			resultSet = preparedStatement.executeQuery();
+			
+	    	if (resultSet.next()) {                              
+	    		jsonObject.put("result", "true");  //µ±Ç°ÓÃ»§ÓĞÕıÔÚ´¦ÀíµÄÉêÇë
+	    		} else {
+	    			jsonObject.put("result", "false");  //µ±Ç°ÓÃ»§ÎŞÕıÔÚ´¦ÀíµÄÉêÇë
+	    			}
+	    	} catch (SQLException ex) {
+	    		Logger.getLogger(MainAppDAO.class.getName()).log(Level.SEVERE, null, ex);
+	        	}
+	    DBManager.closeAll(connection, preparedStatement, resultSet);
+	    return jsonObject;
+	    }
+	
 }
