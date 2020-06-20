@@ -12,6 +12,7 @@ import DBManagerr.DBManager;
 
 public class MainAppDAO {
 	
+	
 	//ÃÌº”Œ¨–ﬁ…Í«Î£®—ß∫≈°¢¬•∫≈°¢Àﬁ…·∫≈°¢Œ¨–ﬁ Ù–‘°¢…Í«Î ±º‰°¢¡™œµ∑Ω Ω°¢±∏◊¢°¢Œ¨–ﬁ◊¥Ã¨£©
 	public static boolean insertApp(String id, String b, String r, String m, String t, String c){
 
@@ -52,8 +53,8 @@ public class MainAppDAO {
 	public static JSONObject IfCanApply(String s_id){
 
 		StringBuilder sql1 = new StringBuilder();
-		sql1.append("select * from MaintenanceRecord where s_id=? and mainstate<>?");
-			
+		sql1.append("select t1.fix_code from MaintenanceRecord t1 inner join MaintenanceRecordState t2 on t1.fix_code=t2.fix_code where t1.s_id=? and t2.mainstate<>?");
+		
 		Connection connection = DBManager.getConnection();
 		PreparedStatement preparedStatement = null;
 	    ResultSet resultSet = null;
