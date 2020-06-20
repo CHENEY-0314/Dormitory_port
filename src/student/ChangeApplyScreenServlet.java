@@ -12,9 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONObject;
 
-public class MaintenanceApplyServlet extends HttpServlet{
-
-	private static final long serialVersionUID = 2L;
+public class ChangeApplyScreenServlet extends HttpServlet {
+	
+private static final long serialVersionUID = 7L;
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) 
@@ -27,20 +27,20 @@ public class MaintenanceApplyServlet extends HttpServlet{
 		try (PrintWriter out = response.getWriter()) {
 			
 			
-			
-			//http://localhost:8080/Dormitory/servlet/MaintenanceApplyServlet?s_id=201830760178&maintenance=电器&remark=备注&contact=13000000&time=2018:06:12:12:30
-			//获得请求中传来的学号、楼栋、宿舍号、维修事项、时间、联系方式
+			//http://localhost:8080/Dormitory/servlet/MaintenanceApplyServlet?s_id=201830760178&building=C10&room_num=101&maintenance=E&time=00:00:00:00&contact=1000&remark=这是备注
+			//获得请求中传来的学号、目标楼栋、目标楼层、目标床位
 			String ID = request.getParameter("s_id").trim();
+			String[] building = request.getParameter("building").trim().split(" ");
+			String room_num = request.getParameter("room_num").trim();
 			String maintenance = request.getParameter("maintenance").trim();
-			String remark = request.getParameter("remark").trim();
-			String contact = request.getParameter("contact").trim();
-			String time = request.getParameter("time").trim();
+			
+			
 			
 			//向数据库中插入数据
 			Map<String, String> params = new HashMap<>();
 			JSONObject jsonObject = new JSONObject();
 
-			boolean result = MainAppDAO.insertMainApp(ID, maintenance, remark, contact, time);
+			boolean result = MainAppDAO.insertMainApp(ID, building, room_num, maintenance, time, contact, remark);
  
 			if (result) {
 				params.put("Result", "success");
@@ -59,5 +59,5 @@ public class MaintenanceApplyServlet extends HttpServlet{
 			throws ServletException, IOException{
 		doPost(request, response);
 	}
-	
+
 }
