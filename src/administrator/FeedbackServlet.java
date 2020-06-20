@@ -14,24 +14,24 @@ import net.sf.json.JSONObject;
 
 public class FeedbackServlet extends HttpServlet {
 
-	// http://localhost:8080/Dormitory/servlet/FeedbackServlet?content=这是一个意见反馈，只是一个测试，模拟真实数据。
+	// http://localhost:8080/Dormitory/servlet/FeedbackServlet?content=你的意见内容
 	
 	private static final long serialVersionUID = 6L;
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
  
-		// 设置响应内容类型  
+		// 璁剧疆鍝嶅簲鍐呭绫诲瀷聽聽
 		response.setContentType("text/html;charset=utf-8");
 		request.setCharacterEncoding("utf-8");
 		response.setCharacterEncoding("utf-8");
  
 		try (PrintWriter out = response.getWriter()) {
  
-			//获得请求中传来反馈内容
+			//鑾峰緱璇锋眰涓紶鏉ュ弽棣堝唴瀹�
 			String content = request.getParameter("content").trim();
  
-			//获取反馈结果
+			//鑾峰彇鍙嶉缁撴灉
 			int result = AdmDAO.Feedback(content);
  
 			Map<String, String> params = new HashMap<>();
