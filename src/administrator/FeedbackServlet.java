@@ -38,7 +38,7 @@ public class FeedbackServlet extends HttpServlet {
 			JSONObject jsonObject = new JSONObject();
  
 			if (result > 0) {
-				params.put("Result", "success: "+content.length());
+				params.put("Result", "success");
 				} else {
 					params.put("Result", "failed");
 					}

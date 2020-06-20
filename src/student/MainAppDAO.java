@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 import DBManagerr.DBManager;
 
 public class MainAppDAO {
-	public static boolean insertApp(String id, String b, String r, String m, String t, String c){
+	public static boolean insertMainApp(String id, String building, String room, String main, String time, String contact, String remark){
 		
 		//连接数据库
 		Connection connection = DBManager.getConnection();
@@ -19,18 +19,19 @@ public class MainAppDAO {
 		int result = 0;
 		//SQL查询语句
 		StringBuilder sqlStatement = new StringBuilder();
-		sqlStatement.append("insert into MaintenanceRecord values (?,?,?,?,?,?,?)");        //问号？的地方会被学号替换
+		sqlStatement.append("insert into MaintenanceRecord values (?, ?, ?, ?, ?, ?, ?, ?)");        //问号？的地方会被学号替换
 		
 		//设置数据库的字段值
 		try {
 			preparedStatement = connection.prepareStatement(sqlStatement.toString());
 			preparedStatement.setString(1, id);
-			preparedStatement.setString(2, b);
-			preparedStatement.setString(3, r);
-			preparedStatement.setString(4, m);
-			preparedStatement.setString(5, t);
-			preparedStatement.setString(6, c);
-			preparedStatement.setString(7, "1");
+			preparedStatement.setString(2, building);
+			preparedStatement.setString(3, room);
+			preparedStatement.setString(4, main);
+			preparedStatement.setString(5, time);
+			preparedStatement.setString(6, contact);
+			preparedStatement.setString(7, remark);
+			preparedStatement.setString(8, "1");
  
 			result = preparedStatement.executeUpdate();                  //执行查找语句，获得返回信息
 			

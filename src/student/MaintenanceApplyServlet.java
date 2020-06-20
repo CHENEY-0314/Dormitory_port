@@ -27,7 +27,7 @@ public class MaintenanceApplyServlet extends HttpServlet{
 		try (PrintWriter out = response.getWriter()) {
 			
 			
-			//http://localhost:8080/Dormitory/servlet/MaintenanceApplyServlet?s_id=201830660178&building=C10&room_num=101&maintenance=E&time=00:00:00:00contact=1000
+			//http://localhost:8080/Dormitory/servlet/MaintenanceApplyServlet?s_id=201830760178&building=C10&room_num=101&maintenance=E&time=00:00:00:00&contact=1000&remark=这是备注
 			//获得请求中传来的学号、楼栋、宿舍号、维修事项、时间、联系方式
 			String ID = request.getParameter("s_id").trim();
 			String building = request.getParameter("building").trim();
@@ -35,6 +35,7 @@ public class MaintenanceApplyServlet extends HttpServlet{
 			String maintenance = request.getParameter("maintenance").trim();
 			String time = request.getParameter("time").trim();
 			String contact = request.getParameter("contact").trim();
+			String remark = request.getParameter("remark").trim();
 			
 			
 			
@@ -42,7 +43,7 @@ public class MaintenanceApplyServlet extends HttpServlet{
 			Map<String, String> params = new HashMap<>();
 			JSONObject jsonObject = new JSONObject();
 
-			boolean result = MainAppDAO.insertApp(ID, building, room_num, maintenance, time, contact);
+			boolean result = MainAppDAO.insertMainApp(ID, building, room_num, maintenance, time, contact, remark);
  
 			if (result) {
 				params.put("Result", "success");
