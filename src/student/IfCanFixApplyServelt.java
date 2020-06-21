@@ -1,4 +1,4 @@
-package administrator;
+package student;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -12,40 +12,30 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONObject;
 
-public class FeedbackServlet extends HttpServlet {
+public class IfCanFixApplyServelt extends HttpServlet {
 
-	// http://localhost:8080/Dormitory/servlet/FeedbackServlet?content=你的意见内容
-	
-	private static final long serialVersionUID = 6L;
+	private static final long serialVersionUID = 1L;
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
  
-		// 璁剧疆鍝嶅簲鍐呭绫诲瀷聽聽
+		// 设置响应内容类型  
 		response.setContentType("text/html;charset=utf-8");
 		request.setCharacterEncoding("utf-8");
 		response.setCharacterEncoding("utf-8");
  
 		try (PrintWriter out = response.getWriter()) {
- 
-			//鑾峰緱璇锋眰涓紶鏉ュ弽棣堝唴瀹�
-			String content = request.getParameter("content").trim();
- 
-			//鑾峰彇鍙嶉缁撴灉
-			int result = AdmDAO.Feedback(content);
- 
-			Map<String, String> params = new HashMap<>();
+			//从浏览器url获取的参数
+			String s_id = request.getParameter("s_id").trim();
+			String password = request.getParameter("password").trim();
+			
 			JSONObject jsonObject = new JSONObject();
- 
-			if (result > 0) {
-				params.put("Result", "success");
-				} else {
-					params.put("Result", "failed");
-					}
- 
-			jsonObject.put("params", params);
-			out.write(jsonObject.toString());
+			Boolean verifyResult = verifyLogin(s_id, password);
+			if(verifyResult){    //验证通过才能进行信息查询，返回的是json格式的数据
+				jsonObject = MainAppDAO.IfCanApply(s_id);
 			}
+			out.write(jsonObject.toString());
+		}
 		}
  
 	@Override
@@ -54,4 +44,11 @@ public class FeedbackServlet extends HttpServlet {
 		doPost(request, response);
 		}
 	
+	//验证用户名密码是否正确
+	private Boolean verifyLogin(String userName, String password) {
+		student user = studentDAO.queryUser(userName);
+		//账户密码验证
+		return null != user && password.equals(user.getPassword());
+		}
+
 }

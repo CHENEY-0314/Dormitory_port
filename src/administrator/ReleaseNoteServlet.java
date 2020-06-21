@@ -41,7 +41,7 @@ private static final long serialVersionUID = 3L;
 			int result = AdmDAO.noteRelease(code, head, content, time);
  
 			if (result > 0) {
-				params.put("Result", "Success: "+String.valueOf(content.length()));
+				params.put("Result", "Success");
 				} else {
 					params.put("Result", "failed");
 					}
