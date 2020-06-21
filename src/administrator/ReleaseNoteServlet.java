@@ -26,10 +26,8 @@ private static final long serialVersionUID = 3L;
 				
 		try (PrintWriter out = response.getWriter()) {
 			
-			
-			//http://localhost:8080/Dormitory/servlet/ReleaseNoteServlet?code=0001&head=测试&content=text&time=06:19:09:15
-			//获得请求中传来的编号、标题、内容、时间
-			String code = request.getParameter("code").trim();
+			//http://localhost:8080/Dormitory/servlet/ReleaseNoteServlet?head=测试&content=text&time=06:19:09:15
+			//获得请求中传来的标题、内容、时间
 			String head = request.getParameter("head").trim();
 			String content = request.getParameter("content").trim();
 			String time = request.getParameter("time").trim();
@@ -38,7 +36,7 @@ private static final long serialVersionUID = 3L;
 			Map<String, String> params = new HashMap<>();
 			JSONObject jsonObject = new JSONObject();
 
-			int result = AdmDAO.noteRelease(code, head, content, time);
+			int result = AdmDAO.noteRelease(head, content, time);
  
 			if (result > 0) {
 				params.put("Result", "Success");

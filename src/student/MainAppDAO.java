@@ -30,7 +30,7 @@ public class MainAppDAO {
 		int random;//生成4位数的随机数
 		String fix_code;
 		   do{
-			random=(int) ((Math.random()*9+1)*1000);  //生成5位数的项目id
+			random=(int) ((Math.random()*9+1)*1000);  //生成4位数的项目id
 			fix_code=""+random;
 		   }while(isExist(fix_code));
 		
@@ -117,7 +117,7 @@ public class MainAppDAO {
 	        	for(int i = 1;resultSet.next();i++) {
 	        		message.put("mainstate", resultSet.getString("mainstate"));
 	        		message.put("time", resultSet.getString("time"));
-	        		jsonObject.put("result", message);
+	        		jsonObject.put(i, message);
 	        		}
 	        	
 		    	} catch (SQLException ex) {
