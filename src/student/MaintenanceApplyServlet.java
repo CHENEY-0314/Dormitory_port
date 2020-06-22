@@ -41,7 +41,7 @@ public class MaintenanceApplyServlet extends HttpServlet{
 			JSONObject jsonObject = new JSONObject();
 
 			boolean result = MainAppDAO.insertMainApp(ID, maintenance, remark, contact, time);
- 
+
 			if (result) {
 				params.put("Result", "success");
 				} else {

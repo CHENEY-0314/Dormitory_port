@@ -72,14 +72,14 @@ public class MainAppDAO {
 	    ResultSet resultSet = null;
 
 	    JSONObject jsonObject = new JSONObject();
-	    
+
 	    try {
 			preparedStatement = connection.prepareStatement(sql1.toString());
 			preparedStatement.setString(1, s_id);
 			preparedStatement.setString(2, "5");
 
 			resultSet = preparedStatement.executeQuery();
-			
+
 	    	if (resultSet.next()) {                              
 	    		jsonObject.put("result", "true");  //��ǰ�û������ڴ��������
 	    		} else {
