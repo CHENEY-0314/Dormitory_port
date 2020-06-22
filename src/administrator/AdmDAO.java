@@ -138,8 +138,6 @@ public class AdmDAO {
 	    try {
 			preparedStatement = connection.prepareStatement(sql1.toString());
 			resultSet = preparedStatement.executeQuery();
-			if(resultSet.next()){
-				resultSet.previous();
 				for(int i = 1;resultSet.next();i++) {
 					message.put("fix_code", resultSet.getString("fix_code"));
 					message.put("s_id", resultSet.getString("s_id"));
@@ -150,11 +148,6 @@ public class AdmDAO {
 					message.put("time", resultSet.getString("time"));
 					jsonObject.put(i, message);
 					}
-				}else{
-					message.put("result", "none");
-					jsonObject.put(1, message);
-				}
-        	
 	    	} catch (SQLException ex) {
 	    		Logger.getLogger(MainAppDAO.class.getName()).log(Level.SEVERE, null, ex);
 	        	}

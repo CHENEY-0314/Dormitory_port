@@ -16,7 +16,7 @@ import DBManagerr.DBManager;
 public class MainAppDAO {
 	
 	public static boolean insertMainApp(String id, String main, String remark, String contact, String time){	
-		//Á¬½ÓÊı¾İ¿â
+
 		Connection connection = DBManager.getConnection();
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -24,14 +24,14 @@ public class MainAppDAO {
 
 		StringBuilder sqlStatement1 = new StringBuilder();
 		StringBuilder sqlStatement2 = new StringBuilder();
-		sqlStatement1.append("insert into MaintenanceRecord values (?, ?, ?, ?, ?)");        //ÎÊºÅ£¿µÄµØ·½»á±»Ñ§ºÅÌæ»»
+		sqlStatement1.append("insert into MaintenanceRecord values (?, ?, ?, ?, ?)");
 		sqlStatement2.append("insert into MaintenanceRecordState values(?, ?, ?)");
-		
-		//Éú³ÉËæ»úÊı±àÂë
-		int random;//Éú³É4Î»ÊıµÄËæ»úÊı
+
+		//éšæœºç”Ÿæˆ4ä½æ•°çš„ç»´ä¿®code
+		int random;
 		String fix_code;
 		   do{
-			random=(int) ((Math.random()*9+1)*1000);  //Éú³É4Î»ÊıµÄÏîÄ¿id
+			random=(int) ((Math.random()*9+1)*1000);
 			fix_code=""+random;
 		   }while(isExist(fix_code));
 		
@@ -64,7 +64,7 @@ public class MainAppDAO {
 			}
 	}
 	
-	//ÅĞ¶Ïµ±Ç°ÓÃ»§ÊÇ·ñ¿ÉÒÔ½øĞĞÎ¬ĞŞÉêÇë£¨¼°µ±Ç°ÎŞ×´Ì¬Îª1-4µÄÉêÇë£©
+	//åˆ¤æ–­æ˜¯å¦å¯ä»¥è¿›è¡Œç»´ä¿®ç”³è¯·ï¼ˆå½“å‰ç”¨æˆ·æ— çŠ¶æ€ä¸º1åˆ°4çš„ç»´ä¿®ç”³è¯·ï¼‰
 	public static JSONObject IfCanApply(String s_id){
 
 		StringBuilder sql1 = new StringBuilder();
@@ -84,9 +84,9 @@ public class MainAppDAO {
 			resultSet = preparedStatement.executeQuery();
 			
 	    	if (resultSet.next()) {                              
-	    		jsonObject.put("result", "true");  //µ±Ç°ÓÃ»§ÓĞÕıÔÚ´¦ÀíµÄÉêÇë
+	    		jsonObject.put("result", "true");  //ä¸èƒ½è¿›è¡Œç»´ä¿®ç”³è¯·
 	    		} else {
-	    			jsonObject.put("result", "false");  //µ±Ç°ÓÃ»§ÎŞÕıÔÚ´¦ÀíµÄÉêÇë
+	    			jsonObject.put("result", "false");  //å¯ä»¥è¿›è¡Œç»´ä¿®ç”³è¯·
 	    			}
 	    	} catch (SQLException ex) {
 	    		Logger.getLogger(MainAppDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -96,11 +96,11 @@ public class MainAppDAO {
 	    }
 	
 	
-	    //»ñÈ¡ÓÃ»§µ±Ç°µÄÎ¬ĞŞÉêÇë
+	    //è·å–æŒ‡å®šidå­¦ç”Ÿçš„å½“å‰ç»´ä¿®ç”³è¯·ä¿¡æ¯
 		public static JSONObject GetFixApply(String s_id){
 
 			StringBuilder sql1 = new StringBuilder();
-			sql1.append("select t2.mainstate,t2.time from MaintenanceRecord t1 inner join MaintenanceRecordState t2 on t1.fix_code=t2.fix_code where t1.s_id=? and t2.mainstate<>?");
+			sql1.append("select t2.mainstate,t2.time,t2.fix_code from MaintenanceRecord t1 inner join MaintenanceRecordState t2 on t1.fix_code=t2.fix_code where t1.s_id=? and t2.mainstate<>?");
 			
 			Connection connection = DBManager.getConnection();
 			PreparedStatement preparedStatement = null;
@@ -116,6 +116,7 @@ public class MainAppDAO {
 				resultSet = preparedStatement.executeQuery();
 				
 	        	for(int i = 1;resultSet.next();i++) {
+	        		message.put("fix_code", resultSet.getString("fix_code"));
 	        		message.put("mainstate", resultSet.getString("mainstate"));
 	        		message.put("time", resultSet.getString("time"));
 	        		jsonObject.put(i, message);
@@ -129,38 +130,37 @@ public class MainAppDAO {
 		    }
 		
 	
-	//ÅĞ¶Ïfix_code±àºÅÊÇ·ñ´æÔÚ
+	//åˆ¤æ–­fix_codeæ˜¯å¦è¿˜åœ¨
 	private static Boolean isExist(String fix_code) {
 			 MaintenanceRecord record = queryFixCode(fix_code);
 			 return null != record;
 		 }
 		
-	//²éÑ¯µ±Ç°fix_codeÊÇ·ñ´æÔÚ£¬´æÔÚ·µ»Ø>0£¬·ñÔò==0¡£
+	//é€šè¿‡fix_codeæŸ¥æ‰¾å¯¹åº”çš„ç»´ä¿®ä¿¡æ¯
 	public static MaintenanceRecord queryFixCode(String fix_code) {
-		   //Á¬½ÓÊı¾İ¿â
+
 		   Connection connection = DBManager.getConnection();
 		   PreparedStatement preparedStatement = null;
 		   ResultSet resultSet = null;
 		  
-		   //SQL²éÑ¯Óï¾ä
+
 		   StringBuilder sqlStatement = new StringBuilder();
-		   sqlStatement.append("select * from MaintenanceRecord where fix_code=?");        //ÎÊºÅ£¿µÄµØ·½»á±»idÌæ»»
-		      
-		   //ÉèÖÃÊı¾İ¿âµÄ×Ö¶ÎÖµ
+		   sqlStatement.append("select * from MaintenanceRecord where fix_code=?");   
+
 		   try {
 		    preparedStatement = connection.prepareStatement(sqlStatement.toString());
 		    preparedStatement.setString(1, fix_code);
 		  
-		    resultSet = preparedStatement.executeQuery();                  //Ö´ĞĞ²éÕÒÓï¾ä£¬»ñµÃ·µ»ØĞÅÏ¢
+		    resultSet = preparedStatement.executeQuery();
 		    
 		    MaintenanceRecord record = null;
-		    if (resultSet.next()) {                                        //Éú³Érecord¶ÔÏó²¢·µ»Ø
+		    if (resultSet.next()) {
 		     record = new MaintenanceRecord(
 		    		 resultSet.getString("fix_code"),
 		    		 resultSet.getString("s_id"),
 		    		 resultSet.getString("maintenance"),
 		    		 resultSet.getString("remark"),
-		    		 resultSet.getString("contact")); //ÉèÖÃĞÅÏ¢
+		    		 resultSet.getString("contact"));
 		     return record;
 		     } else {
 		      return null;
@@ -169,14 +169,14 @@ public class MainAppDAO {
 		     Logger.getLogger(MainAppDAO.class.getName()).log(Level.SEVERE, null, ex);
 		     return null;
 		     } finally {
-		      DBManager.closeAll(connection, preparedStatement, resultSet);               //¹Ø±ÕÁ¬½Ó
+		      DBManager.closeAll(connection, preparedStatement, resultSet);
 		      }
 		   }
 	
 	
-	//Ñ§ÉúÈ·ÈÏÑéÊÕ£¨×´Ì¬3µ½×´Ì¬4£©
+	//å­¦ç”Ÿç¡®è®¤éªŒæ”¶ï¼ˆä»çŠ¶æ€3åˆ°çŠ¶æ€4çš„è·³è½¬ï¼‰
 	public static boolean checkUp(String fix_code, String time, String s_id){	
-		//Á¬½ÓÊı¾İ¿â
+
 		Connection connection = DBManager.getConnection();
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -187,11 +187,10 @@ public class MainAppDAO {
 		sqlStatement1.append("insert into MaintenanceRecordState values (?, ?, ?)");
 		sqlStatement2.append("insert into Note values(?, ?, ? ,?, ?)");
 		
-		//Éú³ÉËæ»úÊı±àÂë
-		int random;//Éú³É4Î»ÊıµÄËæ»úÊı
+		int random;
 		String code;
 		   do{
-			random=(int) ((Math.random()*9+1)*1000);  //Éú³É4Î»ÊıµÄÏîÄ¿id
+			random=(int) ((Math.random()*9+1)*1000);
 			code="1"+random;
 		   }while(AdmDAO.isExist(code));
 		
@@ -206,8 +205,8 @@ public class MainAppDAO {
 			
 			preparedStatement = connection.prepareStatement(sqlStatement2.toString());
 			preparedStatement.setString(1, code);
-			preparedStatement.setString(2, "Î¬ĞŞÉêÇëÍ¨Öª");
-			preparedStatement.setString(3, "ÄúµÄÎ¬ĞŞÉêÇëÒÑÑéÊÕÍê³É£¬ÈçÓĞĞèÒª£¬ÇëÔÚ24Ğ¡Ê±ÒÔºóÔÙ´Î·¢ÆğÉêÇë£¡");
+			preparedStatement.setString(2, "ç»´ä¿®å®¿èˆé€šçŸ¥");
+			preparedStatement.setString(3, "æ‚¨å·²ç»ç¡®è®¤éªŒæ”¶ï¼Œæ¬¢è¿ä¸‹æ¬¡ä½¿ç”¨ã€‚ï¼ˆä¸‹æ¬¡ç”³è¯·éœ€è¦é—´éš”ä¸€å¤©ï¼‰");
 			preparedStatement.setString(4, time);
 			preparedStatement.setString(5, s_id);
 
@@ -224,6 +223,8 @@ public class MainAppDAO {
 				DBManager.closeAll(connection, preparedStatement,resultSet);   
 			}
 	}
+	
+	
 	
 
 
