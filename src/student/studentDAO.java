@@ -141,13 +141,11 @@ public class studentDAO {
 			
 		//退出换宿意向
 		public static void ExitIntention(String s_id){
-			//锟斤拷锟斤拷锟斤拷菘锟斤拷锟斤拷锟接讹拷锟斤拷
 			Connection connection = DBManager.getConnection();
 			PreparedStatement preparedStatement = null;
-			//锟斤拷锟斤拷SQL锟斤拷锟斤拷
 			StringBuilder sqlStatement = new StringBuilder();
 			sqlStatement.append("delete from Intention where s_id=?");
-			//锟斤拷锟斤拷锟斤拷锟捷匡拷锟斤拷侄锟街�
+
 			try {
 				preparedStatement = connection.prepareStatement(sqlStatement.toString());
 				preparedStatement.setString(1, s_id);
