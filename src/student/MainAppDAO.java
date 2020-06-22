@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -11,9 +13,9 @@ import net.sf.json.JSONObject;
 import DBManagerr.DBManager;
 
 public class MainAppDAO {
-	public static boolean insertMainApp(String id, String main, String remark, String contact, String time){
-		
-		//è¿æ¥æ•°æ®åº“
+	
+	public static boolean insertMainApp(String id, String main, String remark, String contact, String time){	
+		//Á¬½ÓÊı¾İ¿â
 		Connection connection = DBManager.getConnection();
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -21,14 +23,14 @@ public class MainAppDAO {
 
 		StringBuilder sqlStatement1 = new StringBuilder();
 		StringBuilder sqlStatement2 = new StringBuilder();
-		sqlStatement1.append("insert into MaintenanceRecord values (?, ?, ?, ?, ?)");        //é—®å·ï¼Ÿçš„åœ°æ–¹ä¼šè¢«å­¦å·æ›¿æ¢
+		sqlStatement1.append("insert into MaintenanceRecord values (?, ?, ?, ?, ?)");        //ÎÊºÅ£¿µÄµØ·½»á±»Ñ§ºÅÌæ»»
 		sqlStatement2.append("insert into MaintenanceRecordState values(?, ?, ?)");
 		
-		//ç”Ÿæˆéšæœºæ•°ç¼–ç 
-		int random;//ç”Ÿæˆ4ä½æ•°çš„éšæœºæ•°
+		//Éú³ÉËæ»úÊı±àÂë
+		int random;//Éú³É4Î»ÊıµÄËæ»úÊı
 		String fix_code;
 		   do{
-			random=(int) ((Math.random()*9+1)*1000);  //ç”Ÿæˆ5ä½æ•°çš„é¡¹ç›®id
+			random=(int) ((Math.random()*9+1)*1000);  //Éú³É4Î»ÊıµÄÏîÄ¿id
 			fix_code=""+random;
 		   }while(isExist(fix_code));
 		
@@ -61,12 +63,12 @@ public class MainAppDAO {
 			}
 	}
 	
-	//ï¿½Ğ¶Ïµï¿½Ç°ï¿½Ã»ï¿½ï¿½Ç·ï¿½ï¿½ï¿½Ô½ï¿½ï¿½ï¿½Î¬ï¿½ï¿½ï¿½ï¿½ï¿½ë£¨ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½×´Ì¬Îª1-4ï¿½ï¿½ï¿½ï¿½ï¿½ë£©
+	//ÅĞ¶Ïµ±Ç°ÓÃ»§ÊÇ·ñ¿ÉÒÔ½øĞĞÎ¬ĞŞÉêÇë£¨¼°µ±Ç°ÎŞ×´Ì¬Îª1-4µÄÉêÇë£©
 	public static JSONObject IfCanApply(String s_id){
 
 		StringBuilder sql1 = new StringBuilder();
-		sql1.append("select * from MaintenanceRecord where s_id=? and mainstate<>?");
-			
+		sql1.append("select t1.fix_code from MaintenanceRecord t1 inner join MaintenanceRecordState t2 on t1.fix_code=t2.fix_code where t1.s_id=? and t2.mainstate<>?");
+		
 		Connection connection = DBManager.getConnection();
 		PreparedStatement preparedStatement = null;
 	    ResultSet resultSet = null;
@@ -81,9 +83,9 @@ public class MainAppDAO {
 			resultSet = preparedStatement.executeQuery();
 
 	    	if (resultSet.next()) {                              
-	    		jsonObject.put("result", "true");  //ï¿½ï¿½Ç°ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	    		jsonObject.put("result", "true");  //µ±Ç°ÓÃ»§ÓĞÕıÔÚ´¦ÀíµÄÉêÇë
 	    		} else {
-	    			jsonObject.put("result", "false");  //ï¿½ï¿½Ç°ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	    			jsonObject.put("result", "false");  //µ±Ç°ÓÃ»§ÎŞÕıÔÚ´¦ÀíµÄÉêÇë
 	    			}
 	    	} catch (SQLException ex) {
 	    		Logger.getLogger(MainAppDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -92,75 +94,85 @@ public class MainAppDAO {
 	    return jsonObject;
 	    }
 	
-	//åˆ¤æ–­ç¼–å·æ˜¯å¦å­˜åœ¨
-	 private static Boolean isExist(String fix_code) {
-		 MaintenanceRecord record = queryFixCode(fix_code);
-		 return null != record;
-	 }
 	
-	//æŸ¥è¯¢å½“å‰fix_codeæ˜¯å¦å­˜åœ¨ï¼Œå­˜åœ¨è¿”å›>0ï¼Œå¦åˆ™==0ã€‚
-	  public static MaintenanceRecord queryFixCode(String fix_code) {
-	   //è¿æ¥æ•°æ®åº“
-	   Connection connection = DBManager.getConnection();
-	   PreparedStatement preparedStatement = null;
-	   ResultSet resultSet = null;
-	  
-	   //SQLæŸ¥è¯¢è¯­å¥
-	   StringBuilder sqlStatement = new StringBuilder();
-	   sqlStatement.append("select * from MaintenanceRecord where fix_code=?");        //é—®å·ï¼Ÿçš„åœ°æ–¹ä¼šè¢«idæ›¿æ¢
-	      
-	   //è®¾ç½®æ•°æ®åº“çš„å­—æ®µå€¼
-	   try {
-	    preparedStatement = connection.prepareStatement(sqlStatement.toString());
-	    preparedStatement.setString(1, fix_code);
-	  
-	    resultSet = preparedStatement.executeQuery();                  //æ‰§è¡ŒæŸ¥æ‰¾è¯­å¥ï¼Œè·å¾—è¿”å›ä¿¡æ¯
-	    
-	    MaintenanceRecord record = null;
-	    if (resultSet.next()) {                                        //ç”Ÿæˆrecordå¯¹è±¡å¹¶è¿”å›
-	     record = new MaintenanceRecord(
-	    		 resultSet.getString("fix_code"),
-	    		 resultSet.getString("s_id"),
-	    		 resultSet.getString("maintenance"),
-	    		 resultSet.getString("remark"),
-	    		 resultSet.getString("contact")); //è®¾ç½®ä¿¡æ¯
-	     return record;
-	     } else {
-	      return null;
-	      }
-	    } catch (SQLException ex) {
-	     Logger.getLogger(MainAppDAO.class.getName()).log(Level.SEVERE, null, ex);
-	     return null;
-	     } finally {
-	      DBManager.closeAll(connection, preparedStatement, resultSet);               //å…³é—­è¿æ¥
-	      }
-	   }
-}
+	    //»ñÈ¡ÓÃ»§µ±Ç°µÄÎ¬ĞŞÉêÇë
+		public static JSONObject GetFixApply(String s_id){
 
-class MaintenanceRecord{
-	String fix_code, s_id, maintenance, remark, contact;
-	//æ„é€ å‡½æ•°
-	public MaintenanceRecord(String fc, String si, String mt, String rm, String ct){
-		fix_code = fc;
-		s_id = si;
-		maintenance = mt;
-		remark = rm;
-		contact = ct;
-	}
-	//getå‡½æ•°
-	public final String getFixCode(){
-		return fix_code;
-	}
-	public final String gets_id(){
-		return s_id;
-	}
-	public final String getMaintenance(){
-		return maintenance;
-	}
-	public final String getRemark(){
-		return remark;
-	}
-	public final String getContact(){
-		return contact;
-	}
+			StringBuilder sql1 = new StringBuilder();
+			sql1.append("select t2.mainstate,t2.time from MaintenanceRecord t1 inner join MaintenanceRecordState t2 on t1.fix_code=t2.fix_code where t1.s_id=? and t2.mainstate<>?");
+			
+			Connection connection = DBManager.getConnection();
+			PreparedStatement preparedStatement = null;
+		    ResultSet resultSet = null;
+	        Map<String, String> message = new HashMap<>();
+
+		    JSONObject jsonObject = new JSONObject();
+		    
+		    try {
+				preparedStatement = connection.prepareStatement(sql1.toString());
+				preparedStatement.setString(1, s_id);
+				preparedStatement.setString(2, "5");
+				resultSet = preparedStatement.executeQuery();
+				
+	        	for(int i = 1;resultSet.next();i++) {
+	        		message.put("mainstate", resultSet.getString("mainstate"));
+	        		message.put("time", resultSet.getString("time"));
+	        		jsonObject.put(i, message);
+	        		}
+	        	
+		    	} catch (SQLException ex) {
+		    		Logger.getLogger(MainAppDAO.class.getName()).log(Level.SEVERE, null, ex);
+		        	}
+		    DBManager.closeAll(connection, preparedStatement, resultSet);
+		    return jsonObject;
+		    }
+		
+	
+	//ÅĞ¶Ï±àºÅÊÇ·ñ´æÔÚ
+	private static Boolean isExist(String fix_code) {
+			 MaintenanceRecord record = queryFixCode(fix_code);
+			 return null != record;
+		 }
+		
+	//²éÑ¯µ±Ç°fix_codeÊÇ·ñ´æÔÚ£¬´æÔÚ·µ»Ø>0£¬·ñÔò==0¡£
+	public static MaintenanceRecord queryFixCode(String fix_code) {
+		   //Á¬½ÓÊı¾İ¿â
+		   Connection connection = DBManager.getConnection();
+		   PreparedStatement preparedStatement = null;
+		   ResultSet resultSet = null;
+		  
+		   //SQL²éÑ¯Óï¾ä
+		   StringBuilder sqlStatement = new StringBuilder();
+		   sqlStatement.append("select * from MaintenanceRecord where fix_code=?");        //ÎÊºÅ£¿µÄµØ·½»á±»idÌæ»»
+		      
+		   //ÉèÖÃÊı¾İ¿âµÄ×Ö¶ÎÖµ
+		   try {
+		    preparedStatement = connection.prepareStatement(sqlStatement.toString());
+		    preparedStatement.setString(1, fix_code);
+		  
+		    resultSet = preparedStatement.executeQuery();                  //Ö´ĞĞ²éÕÒÓï¾ä£¬»ñµÃ·µ»ØĞÅÏ¢
+		    
+		    MaintenanceRecord record = null;
+		    if (resultSet.next()) {                                        //Éú³Érecord¶ÔÏó²¢·µ»Ø
+		     record = new MaintenanceRecord(
+		    		 resultSet.getString("fix_code"),
+		    		 resultSet.getString("s_id"),
+		    		 resultSet.getString("maintenance"),
+		    		 resultSet.getString("remark"),
+		    		 resultSet.getString("contact")); //ÉèÖÃĞÅÏ¢
+		     return record;
+		     } else {
+		      return null;
+		      }
+		    } catch (SQLException ex) {
+		     Logger.getLogger(MainAppDAO.class.getName()).log(Level.SEVERE, null, ex);
+		     return null;
+		     } finally {
+		      DBManager.closeAll(connection, preparedStatement, resultSet);               //¹Ø±ÕÁ¬½Ó
+		      }
+		   }
+	
+
+
 }
+	

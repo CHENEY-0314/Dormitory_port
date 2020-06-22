@@ -19,24 +19,22 @@ public class MaintenanceApplyServlet extends HttpServlet{
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException{
-		// 设置响应内容类型  
+		// 璁剧疆鍝嶅簲鍐呭绫诲瀷聽聽
 		response.setContentType("text/html;charset=utf-8");
 		request.setCharacterEncoding("utf-8");
 		response.setCharacterEncoding("utf-8");
 				
 		try (PrintWriter out = response.getWriter()) {
 			
-			
-			
-			//http://localhost:8080/Dormitory/servlet/MaintenanceApplyServlet?s_id=201830760178&maintenance=电器&remark=备注&contact=13000000&time=2018:06:12:12:30
-			//获得请求中传来的学号、楼栋、宿舍号、维修事项、时间、联系方式
+			//http://localhost:8080/Dormitory/servlet/MaintenanceApplyServlet?s_id=201830760178&maintenance=鐢靛櫒&remark=澶囨敞&contact=13000000&time=2018:06:12:12:30
+			//鑾峰緱璇锋眰涓紶鏉ョ殑瀛﹀彿銆佹ゼ鏍嬨�瀹胯垗鍙枫�缁翠慨浜嬮」銆佹椂闂淬�鑱旂郴鏂瑰紡
 			String ID = request.getParameter("s_id").trim();
 			String maintenance = request.getParameter("maintenance").trim();
 			String remark = request.getParameter("remark").trim();
 			String contact = request.getParameter("contact").trim();
 			String time = request.getParameter("time").trim();
 			
-			//向数据库中插入数据
+			//鍚戞暟鎹簱涓彃鍏ユ暟鎹�
 			Map<String, String> params = new HashMap<>();
 			JSONObject jsonObject = new JSONObject();
 

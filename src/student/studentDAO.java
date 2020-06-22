@@ -188,6 +188,43 @@ public class studentDAO {
 					}
 			}
 		
+		//删除当前学生指定code的通知
+		public static void DeleteNote(String code){
+			Connection connection = DBManager.getConnection();
+			PreparedStatement preparedStatement = null;
+
+			StringBuilder sqlStatement = new StringBuilder();
+			sqlStatement.append("delete from Note where code = ?");
+	    	try {
+	    		preparedStatement = connection.prepareStatement(sqlStatement.toString());
+	    		preparedStatement.setString(1, code);
+	    		preparedStatement.executeUpdate();
+	    		} catch (SQLException ex) {
+	    			
+	    		} finally {
+	    			DBManager.closeAll(connection, preparedStatement);
+	    			}
+			}
+		
+		//改变当前学生联系方式
+		public static void ChangeNumber(String number,String s_id){
+			Connection connection = DBManager.getConnection();
+			PreparedStatement preparedStatement = null;
+
+			StringBuilder sqlStatement = new StringBuilder();
+			sqlStatement.append("update Student set contact=? where s_id=?");
+	    	try {
+	    		preparedStatement = connection.prepareStatement(sqlStatement.toString());
+	    		preparedStatement.setString(1, number);
+	    		preparedStatement.setString(2, s_id);
+	    		preparedStatement.executeUpdate();
+	    		} catch (SQLException ex) {
+	    			
+	    		} finally {
+	    			DBManager.closeAll(connection, preparedStatement);
+	    			}
+			}
+		
 
 	
 }
