@@ -54,8 +54,8 @@ public class AdmDAO {
 			}
 	}
 	
-	//判断编号是否存在
-	private static Boolean isExist(String code) {
+	//判断Note的编号是否存在
+	public static Boolean isExist(String code) {
 		Note record = queryNoteCode(code);
 		return null != record;
 		}
@@ -161,6 +161,111 @@ public class AdmDAO {
 	    DBManager.closeAll(connection, preparedStatement, resultSet);
 	    return jsonObject;
 	    }
+	
+	
+	//管理员确认受理学生的维修申请（状态1到状态2）
+	public static boolean handleFixApply(String fix_code, String time, String s_id){	
+		//连接数据库
+		Connection connection = DBManager.getConnection();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		int result1 = 0, result2 = 0;
+
+		StringBuilder sqlStatement1 = new StringBuilder();
+		StringBuilder sqlStatement2 = new StringBuilder();
+		sqlStatement1.append("insert into MaintenanceRecordState values (?, ?, ?)");
+		sqlStatement2.append("insert into Note values(?, ?, ? ,?, ?)");
+		
+		//生成随机数编码
+		int random;//生成4位数的随机数
+		String code;
+		   do{
+			random=(int) ((Math.random()*9+1)*1000);  //生成4位数的项目id
+			code="1"+random;
+		   }while(isExist(code));
+		
+		try {
+			preparedStatement = connection.prepareStatement(sqlStatement1.toString());
+			preparedStatement.setString(1, fix_code);
+			preparedStatement.setString(2, "2");
+			preparedStatement.setString(3, time);
+			result1 = preparedStatement.executeUpdate();
+			
+			preparedStatement.close();
+			
+			preparedStatement = connection.prepareStatement(sqlStatement2.toString());
+			preparedStatement.setString(1, code);
+			preparedStatement.setString(2, "维修申请通知");
+			preparedStatement.setString(3, "管理员已受理您的维修申请，请留意您的手机，管理员可能会联系您确认具体事项。更多信息请前往我的维修申请页面查看。");
+			preparedStatement.setString(4, time);
+			preparedStatement.setString(5, s_id);
+
+			result2 = preparedStatement.executeUpdate();
+
+			if(result1 != 0 && result2 != 0){
+				return true;
+			} else return false;
+		}
+		catch (SQLException ex) {
+			Logger.getLogger(AdmDAO.class.getName()).log(Level.SEVERE, null, ex);
+				return false;
+			} finally {
+				DBManager.closeAll(connection, preparedStatement,resultSet);   
+			}
+	}
+	
+	//管理员确认线下的维修完成（状态2到状态3）
+	public static boolean confirmFixOver(String fix_code, String time, String s_id){	
+		//连接数据库
+		Connection connection = DBManager.getConnection();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		int result1 = 0, result2 = 0;
+
+		StringBuilder sqlStatement1 = new StringBuilder();
+		StringBuilder sqlStatement2 = new StringBuilder();
+		sqlStatement1.append("insert into MaintenanceRecordState values (?, ?, ?)");
+		sqlStatement2.append("insert into Note values(?, ?, ? ,?, ?)");
+		
+		//生成随机数编码
+		int random;//生成4位数的随机数
+		String code;
+		   do{
+			random=(int) ((Math.random()*9+1)*1000);  //生成4位数的项目id
+			code="1"+random;
+		   }while(isExist(code));
+		
+		try {
+			preparedStatement = connection.prepareStatement(sqlStatement1.toString());
+			preparedStatement.setString(1, fix_code);
+			preparedStatement.setString(2, "3");
+			preparedStatement.setString(3, time);
+			result1 = preparedStatement.executeUpdate();
+			
+			preparedStatement.close();
+			
+			preparedStatement = connection.prepareStatement(sqlStatement2.toString());
+			preparedStatement.setString(1, code);
+			preparedStatement.setString(2, "维修申请通知");
+			preparedStatement.setString(3, "您的宿舍已维修完成，请前往我的维修申请页面确认验收，超时（三天后）将自动验收。");
+			preparedStatement.setString(4, time);
+			preparedStatement.setString(5, s_id);
+
+			result2 = preparedStatement.executeUpdate();
+
+			if(result1 != 0 && result2 != 0){
+				return true;
+			} else return false;
+		}
+		catch (SQLException ex) {
+			Logger.getLogger(AdmDAO.class.getName()).log(Level.SEVERE, null, ex);
+				return false;
+			} finally {
+				DBManager.closeAll(connection, preparedStatement,resultSet);   
+			}
+	}
+	
+	
 	
 	
 }
