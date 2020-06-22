@@ -69,7 +69,7 @@ public class AdmDAO {
 		  
 		   //SQL查询语句
 		   StringBuilder sqlStatement = new StringBuilder();
-		   sqlStatement.append("select * from MaintenanceRecord where code=?");        //问号？的地方会被id替换
+		   sqlStatement.append("select * from Note where code=?");        //问号？的地方会被id替换
 		      
 		   //设置数据库的字段值
 		   try {
@@ -265,7 +265,54 @@ public class AdmDAO {
 			}
 	}
 	
-	
+	//管理员拒绝受理宿舍维修（从状态1驳回）
+	public static boolean refuseFixApply(String fix_code, String time, String s_id,String content){	
+		//连接数据库
+		Connection connection = DBManager.getConnection();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		int result1 = 0, result2 = 0;
+
+		StringBuilder sqlStatement1 = new StringBuilder();
+		StringBuilder sqlStatement2 = new StringBuilder();
+		sqlStatement1.append("delete from MaintenanceRecord where fix_code=?");
+		sqlStatement2.append("insert into Note values(?, ?, ? ,?, ?)");
+		
+		//生成随机数编码
+		int random;//生成4位数的随机数
+		String code;
+		   do{
+			random=(int) ((Math.random()*9+1)*1000);  //生成4位数的项目id
+			code="1"+random;
+		   }while(isExist(code));
+		
+		try {
+			preparedStatement = connection.prepareStatement(sqlStatement1.toString());
+			preparedStatement.setString(1, fix_code);
+			result1 = preparedStatement.executeUpdate();
+			
+			preparedStatement.close();
+			
+			preparedStatement = connection.prepareStatement(sqlStatement2.toString());
+			preparedStatement.setString(1, code);
+			preparedStatement.setString(2, "维修申请通知");
+			preparedStatement.setString(3, content);
+			preparedStatement.setString(4, time);
+			preparedStatement.setString(5, s_id);
+
+			result2 = preparedStatement.executeUpdate();
+
+			if(result1 != 0 && result2 != 0){
+				return true;
+			} else return false;
+		}
+		catch (SQLException ex) {
+			Logger.getLogger(AdmDAO.class.getName()).log(Level.SEVERE, null, ex);
+				return false;
+			} finally {
+				DBManager.closeAll(connection, preparedStatement,resultSet);   
+			}
+	}
 	
 	
 }
