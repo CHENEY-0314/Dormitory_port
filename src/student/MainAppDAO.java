@@ -16,7 +16,7 @@ import DBManagerr.DBManager;
 public class MainAppDAO {
 	
 	public static boolean insertMainApp(String id, String main, String remark, String contact, String time){	
-		//������ݿ�
+
 		Connection connection = DBManager.getConnection();
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -24,13 +24,14 @@ public class MainAppDAO {
 
 		StringBuilder sqlStatement1 = new StringBuilder();
 		StringBuilder sqlStatement2 = new StringBuilder();
-		sqlStatement1.append("insert into MaintenanceRecord values (?, ?, ?, ?, ?)");        //�ʺţ��ĵط��ᱻѧ���滻
+		sqlStatement1.append("insert into MaintenanceRecord values (?, ?, ?, ?, ?)");
 		sqlStatement2.append("insert into MaintenanceRecordState values(?, ?, ?)");
-		
-		int random;//���4λ��������
+
+		//随机生成4位数的维修code
+		int random;
 		String fix_code;
 		   do{
-			random=(int) ((Math.random()*9+1)*1000);  //���4λ�����Ŀid
+			random=(int) ((Math.random()*9+1)*1000);
 			fix_code=""+random;
 		   }while(isExist(fix_code));
 		
@@ -63,7 +64,7 @@ public class MainAppDAO {
 			}
 	}
 	
-	//�жϵ�ǰ�û��Ƿ���Խ���ά�����루����ǰ��״̬Ϊ1-4�����룩
+	//判断是否可以进行维修申请（当前用户无状态为1到4的维修申请）
 	public static JSONObject IfCanApply(String s_id){
 
 		StringBuilder sql1 = new StringBuilder();
@@ -83,9 +84,9 @@ public class MainAppDAO {
 			resultSet = preparedStatement.executeQuery();
 			
 	    	if (resultSet.next()) {                              
-	    		jsonObject.put("result", "true");  //��ǰ�û������ڴ��������
+	    		jsonObject.put("result", "true");  //不能进行维修申请
 	    		} else {
-	    			jsonObject.put("result", "false");  //��ǰ�û������ڴ��������
+	    			jsonObject.put("result", "false");  //可以进行维修申请
 	    			}
 	    	} catch (SQLException ex) {
 	    		Logger.getLogger(MainAppDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -95,11 +96,11 @@ public class MainAppDAO {
 	    }
 	
 	
-	    //��ȡ�û���ǰ��ά������
+	    //获取指定id学生的当前维修申请信息
 		public static JSONObject GetFixApply(String s_id){
 
 			StringBuilder sql1 = new StringBuilder();
-			sql1.append("select t2.mainstate,t2.time from MaintenanceRecord t1 inner join MaintenanceRecordState t2 on t1.fix_code=t2.fix_code where t1.s_id=? and t2.mainstate<>?");
+			sql1.append("select t2.mainstate,t2.time,t2.fix_code from MaintenanceRecord t1 inner join MaintenanceRecordState t2 on t1.fix_code=t2.fix_code where t1.s_id=? and t2.mainstate<>?");
 			
 			Connection connection = DBManager.getConnection();
 			PreparedStatement preparedStatement = null;
@@ -115,6 +116,7 @@ public class MainAppDAO {
 				resultSet = preparedStatement.executeQuery();
 				
 	        	for(int i = 1;resultSet.next();i++) {
+	        		message.put("fix_code", resultSet.getString("fix_code"));
 	        		message.put("mainstate", resultSet.getString("mainstate"));
 	        		message.put("time", resultSet.getString("time"));
 	        		jsonObject.put(i, message);
@@ -128,38 +130,37 @@ public class MainAppDAO {
 		    }
 		
 	
-	//�ж�fix_code����Ƿ����
+	//判断fix_code是否还在
 	private static Boolean isExist(String fix_code) {
 			 MaintenanceRecord record = queryFixCode(fix_code);
 			 return null != record;
 		 }
 		
-	//��ѯ��ǰfix_code�Ƿ���ڣ����ڷ���>0������==0��
+	//通过fix_code查找对应的维修信息
 	public static MaintenanceRecord queryFixCode(String fix_code) {
-		   //������ݿ�
+
 		   Connection connection = DBManager.getConnection();
 		   PreparedStatement preparedStatement = null;
 		   ResultSet resultSet = null;
 		  
-		   //SQL��ѯ���
+
 		   StringBuilder sqlStatement = new StringBuilder();
-		   sqlStatement.append("select * from MaintenanceRecord where fix_code=?");        //�ʺţ��ĵط��ᱻid�滻
-		      
-		   //������ݿ���ֶ�ֵ
+		   sqlStatement.append("select * from MaintenanceRecord where fix_code=?");   
+
 		   try {
 		    preparedStatement = connection.prepareStatement(sqlStatement.toString());
 		    preparedStatement.setString(1, fix_code);
 		  
-		    resultSet = preparedStatement.executeQuery();                  //ִ�в�����䣬��÷�����Ϣ
+		    resultSet = preparedStatement.executeQuery();
 		    
 		    MaintenanceRecord record = null;
-		    if (resultSet.next()) {                                        //���record���󲢷���
+		    if (resultSet.next()) {
 		     record = new MaintenanceRecord(
 		    		 resultSet.getString("fix_code"),
 		    		 resultSet.getString("s_id"),
 		    		 resultSet.getString("maintenance"),
 		    		 resultSet.getString("remark"),
-		    		 resultSet.getString("contact")); //������Ϣ
+		    		 resultSet.getString("contact"));
 		     return record;
 		     } else {
 		      return null;
@@ -168,14 +169,14 @@ public class MainAppDAO {
 		     Logger.getLogger(MainAppDAO.class.getName()).log(Level.SEVERE, null, ex);
 		     return null;
 		     } finally {
-		      DBManager.closeAll(connection, preparedStatement, resultSet);               //�ر�����
+		      DBManager.closeAll(connection, preparedStatement, resultSet);
 		      }
 		   }
 	
 	
-	//ѧ��ȷ�����գ�״̬3��״̬4��
+	//学生确认验收（从状态3到状态4的跳转）
 	public static boolean checkUp(String fix_code, String time, String s_id){	
-		//������ݿ�
+
 		Connection connection = DBManager.getConnection();
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -186,11 +187,10 @@ public class MainAppDAO {
 		sqlStatement1.append("insert into MaintenanceRecordState values (?, ?, ?)");
 		sqlStatement2.append("insert into Note values(?, ?, ? ,?, ?)");
 		
-		//�����������
-		int random;//���4λ��������
+		int random;
 		String code;
 		   do{
-			random=(int) ((Math.random()*9+1)*1000);  //���4λ�����Ŀid
+			random=(int) ((Math.random()*9+1)*1000);
 			code="1"+random;
 		   }while(AdmDAO.isExist(code));
 		
@@ -205,8 +205,8 @@ public class MainAppDAO {
 			
 			preparedStatement = connection.prepareStatement(sqlStatement2.toString());
 			preparedStatement.setString(1, code);
-			preparedStatement.setString(2, "维修申请通知֪");
-			preparedStatement.setString(3, "您的宿舍已维修完成，请前往我的维修申请页面确认验收，超时（三天后）将自动验收。");
+			preparedStatement.setString(2, "维修宿舍通知");
+			preparedStatement.setString(3, "您已经确认验收，欢迎下次使用。（下次申请需要间隔一天）");
 			preparedStatement.setString(4, time);
 			preparedStatement.setString(5, s_id);
 
@@ -223,6 +223,8 @@ public class MainAppDAO {
 				DBManager.closeAll(connection, preparedStatement,resultSet);   
 			}
 	}
+	
+	
 	
 
 

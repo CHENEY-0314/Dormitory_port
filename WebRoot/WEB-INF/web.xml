@@ -130,9 +130,23 @@
   <servlet>
     <description>This is the description of my J2EE component</description>
     <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>GetFixByCodeServlet</servlet-name>
+    <servlet-class>student.GetFixByCodeServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
     <servlet-name>ChangeSubmitServlet</servlet-name>
     <servlet-class>student.ChangeSubmitServlet</servlet-class>
   </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>UpdataFixApplyServlet</servlet-name>
+    <servlet-class>student.UpdataFixApplyServlet</servlet-class>
+  </servlet>
+
+
 
 
 
@@ -223,6 +237,14 @@
     <servlet-name>ChangeSubmitServlet</servlet-name>
     <url-pattern>/servlet/ChangeSubmitServlet</url-pattern>
   </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>GetFixByCodeServlet</servlet-name>
+    <url-pattern>/servlet/GetFixByCodeServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>UpdataFixApplyServlet</servlet-name>
+    <url-pattern>/servlet/UpdataFixApplyServlet</url-pattern>
+  </servlet-mapping>
   
   
   
@@ -232,7 +254,7 @@
   
   
   
-  
+    
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>
     <welcome-file>index.htm</welcome-file>
