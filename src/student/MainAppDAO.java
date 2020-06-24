@@ -191,7 +191,7 @@ public class MainAppDAO {
 		String code;
 		   do{
 			random=(int) ((Math.random()*9+1)*1000);
-			code="1"+random;
+			code="2"+random;
 		   }while(AdmDAO.isExist(code));
 		
 		try {
