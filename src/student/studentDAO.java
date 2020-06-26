@@ -97,11 +97,13 @@ public class studentDAO {
 		PreparedStatement preparedStatement = null;
 
 		StringBuilder sqlStatement = new StringBuilder();
-		sqlStatement.append("insert into Intention (s_id) values (?)");
+		sqlStatement.append("insert into Intention (s_id,occupied) values (?,?)");
 
 		try {
 			preparedStatement = connection.prepareStatement(sqlStatement.toString());
 			preparedStatement.setString(1, s_id);
+			preparedStatement.setString(2, "0");
+
 			preparedStatement.executeUpdate();
 			} catch (SQLException ex) {
 			} finally {
@@ -113,7 +115,7 @@ public class studentDAO {
 		public static JSONObject IfInIntention(String s_id){
 
 			StringBuilder sql1 = new StringBuilder();
-			sql1.append("select s_id from Intention where s_id=?");      
+			sql1.append("select * from Intention where s_id=?");      
 				
 			Connection connection = DBManager.getConnection();
 			PreparedStatement preparedStatement = null;
@@ -127,8 +129,8 @@ public class studentDAO {
 				preparedStatement.setString(1, s_id);
 				resultSet = preparedStatement.executeQuery();          
 				
-		    	if (resultSet.next()) {                              
-		    		jsonObject.put("result", "true");  //已经加入意向
+		    	if (resultSet.next()) { 
+		    		jsonObject.put("result", resultSet.getString("occupied"));  //已经加入意向 返回是否被占用
 		    		} else {
 		    			jsonObject.put("result", "false");  //没有加入意向
 		    			}
