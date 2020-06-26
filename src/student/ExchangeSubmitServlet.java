@@ -12,9 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONObject;
 
-public class ChangeSubmitServlet extends HttpServlet{
+public class ExchangeSubmitServlet extends HttpServlet{
 
-//http://localhost:8080/Dormitory/servlet/ChangeSubmitServlet?s_id=201830660178&password=123456&building=C10&room_num=143&bed_num=2&contact=13502246751&time=2020:06:12:12:33
+//http://localhost:8080/Dormitory/servlet/ChangeSubmitServlet?s_id=201830660178&password=123456&target_id=201830660174&building=C10&room_num=145&bed_num=1&contact=13502246751&tbuilding=C11&troom_num=121&tbed_num=3&tcontact=13502243751&time=2020:06:12:12:33
 	private static final long serialVersionUID = 0L;
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -30,10 +30,15 @@ public class ChangeSubmitServlet extends HttpServlet{
 			//获得请求中传来的学号和密码
 			String ID = request.getParameter("s_id").trim();
 			String password = request.getParameter("password").trim();
-			String t_building = request.getParameter("building").trim();
-			String t_room_num = request.getParameter("room_num").trim();
-			String t_bed_num = request.getParameter("bed_num").trim();
+			String target_id = request.getParameter("target_id").trim();
+			String building = request.getParameter("building").trim();
+			String room_num = request.getParameter("room_num").trim();
+			String bed_num = request.getParameter("bed_num").trim();
+			String t_building = request.getParameter("tbuilding").trim();
+			String t_room_num = request.getParameter("troom_num").trim();
+			String t_bed_num = request.getParameter("tbed_num").trim();
 			String contact = request.getParameter("contact").trim();
+			String t_contact = request.getParameter("tcontact").trim();
 			String time = request.getParameter("time").trim();
  
 			//密码验证结果
@@ -45,7 +50,7 @@ public class ChangeSubmitServlet extends HttpServlet{
 			
 			
 			if (verifyResult) {
-				if(ChangeApplyDAO.SubmitExchangeApp(ID,t_building,t_room_num,t_bed_num,contact,time)) 
+				if(ExchangeApplyDAO.SubmitExchangeApp(ID,target_id,building,room_num,bed_num,t_building,t_room_num,t_bed_num,contact,t_contact,time)) 
 					params.put("Result", "success");
 				else params.put("Result", "failed");
 				} else {

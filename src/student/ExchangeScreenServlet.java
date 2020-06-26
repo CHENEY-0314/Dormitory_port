@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONObject;
 
-public class ChangeScreenServlet extends HttpServlet {
+public class ExchangeScreenServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 11L;
 	
@@ -30,7 +30,7 @@ public class ChangeScreenServlet extends HttpServlet {
 			String[] bed_num = request.getParameter("bed_num").trim().split(";");
 
 			JSONObject jsonObject = new JSONObject();
-			jsonObject = ChangeApplyDAO.ChangeScreen(building, floor, bed_num);
+			jsonObject = ExchangeApplyDAO.ChangeScreen(building, floor, bed_num);
  
  			out.write(jsonObject.toString());
 			}

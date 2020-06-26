@@ -124,8 +124,8 @@
   <servlet>
     <description>This is the description of my J2EE component</description>
     <display-name>This is the display name of my J2EE component</display-name>
-    <servlet-name>ChangeScreenServlet</servlet-name>
-    <servlet-class>student.ChangeScreenServlet</servlet-class>
+    <servlet-name>ExchangeScreenServlet</servlet-name>
+    <servlet-class>student.ExchangeScreenServlet</servlet-class>
   </servlet>
   <servlet>
     <description>This is the description of my J2EE component</description>
@@ -136,8 +136,8 @@
   <servlet>
     <description>This is the description of my J2EE component</description>
     <display-name>This is the display name of my J2EE component</display-name>
-    <servlet-name>ChangeSubmitServlet</servlet-name>
-    <servlet-class>student.ChangeSubmitServlet</servlet-class>
+    <servlet-name>ExchangeSubmitServlet</servlet-name>
+    <servlet-class>student.ExchangeSubmitServlet</servlet-class>
   </servlet>
   <servlet>
     <description>This is the description of my J2EE component</description>
@@ -145,7 +145,18 @@
     <servlet-name>UpdataFixApplyServlet</servlet-name>
     <servlet-class>student.UpdataFixApplyServlet</servlet-class>
   </servlet>
-
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>ExchangeTargetResponseServlet</servlet-name>
+    <servlet-class>student.ExchangeTargetResponseServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>AdmGetExchangeAppServlet</servlet-name>
+    <servlet-class>administrator.AdmGetExchangeAppServlet</servlet-class>
+  </servlet>
 
 
 
@@ -230,12 +241,12 @@
     <url-pattern>/servlet/RefuseFixApplyServlet</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-    <servlet-name>ChangeScreenServlet</servlet-name>
-    <url-pattern>/servlet/ChangeScreenServlet</url-pattern>
+    <servlet-name>ExchangeScreenServlet</servlet-name>
+    <url-pattern>/servlet/ExchangeScreenServlet</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-    <servlet-name>ChangeSubmitServlet</servlet-name>
-    <url-pattern>/servlet/ChangeSubmitServlet</url-pattern>
+    <servlet-name>ExchangeSubmitServlet</servlet-name>
+    <url-pattern>/servlet/ExchangeSubmitServlet</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>GetFixByCodeServlet</servlet-name>
@@ -244,6 +255,14 @@
   <servlet-mapping>
     <servlet-name>UpdataFixApplyServlet</servlet-name>
     <url-pattern>/servlet/UpdataFixApplyServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>ExchangeTargetResponseServlet</servlet-name>
+    <url-pattern>/servlet/ExchangeTargetResponseServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>AdmGetExchangeAppServlet</servlet-name>
+    <url-pattern>/servlet/AdmGetExchangeAppServlet</url-pattern>
   </servlet-mapping>
   
   

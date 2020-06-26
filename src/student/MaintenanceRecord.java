@@ -1,6 +1,6 @@
 package student;
 
-class MaintenanceRecord{
+public class MaintenanceRecord{
 	String fix_code, s_id, maintenance, remark, contact;
 
 	public MaintenanceRecord(String fc, String si, String mt, String rm, String ct){

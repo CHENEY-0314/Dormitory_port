@@ -27,12 +27,7 @@ public class AdmDAO {
 		sqlStatement.append("insert into Note values(?, ?, ?, ?, ?)");        //闂彿锛熺殑鍦版柟浼氳瀛﹀彿鏇挎崲
 		
 		//生成随机数编码
-		int random;//生成4位数的随机数
-		String code;
-		   do{
-			random=(int) ((Math.random()*9+1)*1000);  //生成4位数的项目id
-			code="0"+random;
-		   }while(isExist(code));
+		String code = GetCode.getPublicNoteCode();
 		
 		//璁剧疆瀛楁鍊�
 		try {
@@ -53,49 +48,6 @@ public class AdmDAO {
 				DBManager.closeAll(connection, preparedStatement, resultSet);               //鍏抽棴杩炴帴
 			}
 	}
-	
-	//判断Note的编号是否存在
-	public static Boolean isExist(String code) {
-		Note record = queryNoteCode(code);
-		return null != record;
-		}
-		
-	//查询当前fix_code是否存在，存在返回>0，否则==0。
-	public static Note queryNoteCode(String note_code) {
-		   //连接数据库
-		   Connection connection = DBManager.getConnection();
-		   PreparedStatement preparedStatement = null;
-		   ResultSet resultSet = null;
-		  
-		   //SQL查询语句
-		   StringBuilder sqlStatement = new StringBuilder();
-		   sqlStatement.append("select * from Note where code=?");        //问号？的地方会被id替换
-		      
-		   //设置数据库的字段值
-		   try {
-		    preparedStatement = connection.prepareStatement(sqlStatement.toString());
-		    preparedStatement.setString(1, note_code);
-		  
-		    resultSet = preparedStatement.executeQuery();                  //执行查找语句，获得返回信息
-		    
-		    Note record = null;
-		    if (resultSet.next()) {                                        //生成record对象并返回
-		     record = new Note(
-		    		 resultSet.getString("code"),
-		    		 resultSet.getString("head"),
-		    		 resultSet.getString("content"),
-		    		 resultSet.getString("time")); //设置信息
-		     return record;
-		     } else {
-		      return null;
-		      }
-		    } catch (SQLException ex) {
-		     Logger.getLogger(AdmDAO.class.getName()).log(Level.SEVERE, null, ex);
-		     return null;
-		     } finally {
-		      DBManager.closeAll(connection, preparedStatement, resultSet);               //关闭连接
-		      }
-		   }
 	
 	//用户反馈
 	public static int Feedback(String content){
@@ -169,13 +121,7 @@ public class AdmDAO {
 		sqlStatement1.append("insert into MaintenanceRecordState values (?, ?, ?)");
 		sqlStatement2.append("insert into Note values(?, ?, ? ,?, ?)");
 		
-		//生成随机数编码
-		int random;//生成4位数的随机数
-		String code;
-		   do{
-			random=(int) ((Math.random()*9+1)*1000);  //生成4位数的项目id
-			code="1"+random;
-		   }while(isExist(code));
+		String code = GetCode.getFixNoteCode();
 		
 		try {
 			preparedStatement = connection.prepareStatement(sqlStatement1.toString());
@@ -220,13 +166,7 @@ public class AdmDAO {
 		sqlStatement1.append("insert into MaintenanceRecordState values (?, ?, ?)");
 		sqlStatement2.append("insert into Note values(?, ?, ? ,?, ?)");
 		
-		//生成随机数编码
-		int random;//生成4位数的随机数
-		String code;
-		   do{
-			random=(int) ((Math.random()*9+1)*1000);  //生成4位数的项目id
-			code="1"+random;
-		   }while(isExist(code));
+		String code = GetCode.getFixNoteCode();
 		
 		try {
 			preparedStatement = connection.prepareStatement(sqlStatement1.toString());
@@ -271,13 +211,7 @@ public class AdmDAO {
 		sqlStatement1.append("delete from MaintenanceRecord where fix_code=?");
 		sqlStatement2.append("insert into Note values(?, ?, ? ,?, ?)");
 		
-		//生成随机数编码
-		int random;//生成4位数的随机数
-		String code;
-		   do{
-			random=(int) ((Math.random()*9+1)*1000);  //生成4位数的项目id
-			code="1"+random;
-		   }while(isExist(code));
+		String code = GetCode.getFixNoteCode();
 		
 		try {
 			preparedStatement = connection.prepareStatement(sqlStatement1.toString());
@@ -307,5 +241,42 @@ public class AdmDAO {
 			}
 	}
 	
-	
+	//获取所有的换宿申请
+	public static JSONObject GetChangeApply(){
+
+		StringBuilder sql1 = new StringBuilder();
+		sql1.append("SELECT * FROM ApplyRecord a NATURAL JOIN (SELECT change_code,MAX(appstate) as state,MAX(time) as time FROM ApplyRecordState GROUP BY change_code HAVING MAX(appstate)='2' or MAX(appstate) ='3') b");
+		
+		Connection connection = DBManager.getConnection();
+		PreparedStatement preparedStatement = null;
+	    ResultSet resultSet = null;
+        Map<String, String> message = new HashMap<>();
+
+	    JSONObject jsonObject = new JSONObject();
+	    
+	    try {
+			preparedStatement = connection.prepareStatement(sql1.toString());
+			resultSet = preparedStatement.executeQuery();
+				for(int i = 1;resultSet.next();i++) {
+					message.put("change_code", resultSet.getString("change_code"));
+					message.put("s_id", resultSet.getString("s_id"));
+					message.put("building", resultSet.getString("building"));
+					message.put("room_num", resultSet.getString("room_num"));
+					message.put("bed_num", resultSet.getString("bed_num"));
+					message.put("contact", resultSet.getString("contact"));
+					message.put("target_id", resultSet.getString("target_id"));
+					message.put("t_building", resultSet.getString("tbuilding"));
+					message.put("t_room_num", resultSet.getString("troom_num"));
+					message.put("t_bed_num", resultSet.getString("tbed_num"));
+					message.put("t_contact", resultSet.getString("tcontact"));
+					message.put("state", resultSet.getString("state"));
+					message.put("time", resultSet.getString("time"));
+					jsonObject.put(i, message);
+					}
+	    	} catch (SQLException ex) {
+	    		Logger.getLogger(MainAppDAO.class.getName()).log(Level.SEVERE, null, ex);
+	        	}
+	    DBManager.closeAll(connection, preparedStatement, resultSet);
+	    return jsonObject;
+	    }
 }

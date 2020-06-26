@@ -10,6 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import administrator.AdmDAO;
+import administrator.GetCode;
 import net.sf.json.JSONObject;
 import DBManagerr.DBManager;
 
@@ -28,12 +29,7 @@ public class MainAppDAO {
 		sqlStatement2.append("insert into MaintenanceRecordState values(?, ?, ?)");
 
 		//随机生成4位数的维修code
-		int random;
-		String fix_code;
-		   do{
-			random=(int) ((Math.random()*9+1)*1000);
-			fix_code=""+random;
-		   }while(isExist(fix_code));
+		String fix_code = GetCode.getFixCode();
 		
 		try {
 			preparedStatement = connection.prepareStatement(sqlStatement1.toString());
@@ -128,51 +124,6 @@ public class MainAppDAO {
 		    DBManager.closeAll(connection, preparedStatement, resultSet);
 		    return jsonObject;
 		    }
-		
-	
-	//判断fix_code是否还在
-	private static Boolean isExist(String fix_code) {
-			 MaintenanceRecord record = queryFixCode(fix_code);
-			 return null != record;
-		 }
-		
-	//通过fix_code查找对应的维修信息
-	public static MaintenanceRecord queryFixCode(String fix_code) {
-
-		   Connection connection = DBManager.getConnection();
-		   PreparedStatement preparedStatement = null;
-		   ResultSet resultSet = null;
-		  
-
-		   StringBuilder sqlStatement = new StringBuilder();
-		   sqlStatement.append("select * from MaintenanceRecord where fix_code=?");   
-
-		   try {
-		    preparedStatement = connection.prepareStatement(sqlStatement.toString());
-		    preparedStatement.setString(1, fix_code);
-		  
-		    resultSet = preparedStatement.executeQuery();
-		    
-		    MaintenanceRecord record = null;
-		    if (resultSet.next()) {
-		     record = new MaintenanceRecord(
-		    		 resultSet.getString("fix_code"),
-		    		 resultSet.getString("s_id"),
-		    		 resultSet.getString("maintenance"),
-		    		 resultSet.getString("remark"),
-		    		 resultSet.getString("contact"));
-		     return record;
-		     } else {
-		      return null;
-		      }
-		    } catch (SQLException ex) {
-		     Logger.getLogger(MainAppDAO.class.getName()).log(Level.SEVERE, null, ex);
-		     return null;
-		     } finally {
-		      DBManager.closeAll(connection, preparedStatement, resultSet);
-		      }
-		   }
-	
 	
 	//学生确认验收（从状态3到状态4的跳转）
 	public static boolean checkUp(String fix_code, String time, String s_id){	
@@ -187,12 +138,7 @@ public class MainAppDAO {
 		sqlStatement1.append("insert into MaintenanceRecordState values (?, ?, ?)");
 		sqlStatement2.append("insert into Note values(?, ?, ? ,?, ?)");
 		
-		int random;
-		String code;
-		   do{
-			random=(int) ((Math.random()*9+1)*1000);
-			code="1"+random;
-		   }while(AdmDAO.isExist(code));
+		String code = GetCode.getFixNoteCode();
 		
 		try {
 			preparedStatement = connection.prepareStatement(sqlStatement1.toString());
