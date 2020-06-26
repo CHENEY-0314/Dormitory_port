@@ -36,7 +36,7 @@ public class GetCode {
 		String code;
 		   do{
 			random=(int) ((Math.random()*9+1)*1000);  //生成4位数的项目id
-			code="1"+random;
+			code="2"+random;
 		   }while(isNoteExist(code));
 		 return code;
 	}
@@ -48,12 +48,12 @@ public class GetCode {
 		String code;
 		   do{
 			random=(int) ((Math.random()*9+1)*1000);  //生成4位数的项目id
-			code="2"+random;
+			code="1"+random;
 		   }while(isNoteExist(code));
 		 return code;
 	}
 	
-	// 获取维修事件编号
+	// 获取维修编号
 	public static String getFixCode(){
 		//生成随机数编码
 		int random;
@@ -65,7 +65,7 @@ public class GetCode {
 	   return fix_code;
 	}
 	
-	// 获取换宿事件编号
+	// 获取换宿编号
 	public static String getDormCode(){
 		//生成随机数编码
 		int random;

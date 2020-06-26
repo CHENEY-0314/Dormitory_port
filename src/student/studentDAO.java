@@ -155,7 +155,7 @@ public class studentDAO {
 				DBManager.closeAll(connection, preparedStatement);
 				}
 		}
-	
+
 	//获取当前学生的通知
 	@SuppressWarnings("finally")
 	public static JSONObject GetNote(String s_id){

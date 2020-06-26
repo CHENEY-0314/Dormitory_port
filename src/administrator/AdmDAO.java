@@ -404,7 +404,7 @@ public class AdmDAO {
 			preparedStatement.close();
 			// 发送通知
 			preparedStatement = connection.prepareStatement(sqlStatement3.toString());
-			preparedStatement.setString(1, GetCode.getFixNoteCode());
+			preparedStatement.setString(1, GetCode.getDormNoteCode());
 			preparedStatement.setString(2, "换宿申请通知");
 			preparedStatement.setString(3, "您与"+s_id+"的交换宿舍由管理员最终确认完成！本次换宿结束！");
 			preparedStatement.setString(4, time);
@@ -412,7 +412,7 @@ public class AdmDAO {
 			result2 = preparedStatement.executeUpdate();
 			preparedStatement.close();
 			preparedStatement = connection.prepareStatement(sqlStatement3.toString());
-			preparedStatement.setString(1, GetCode.getFixNoteCode());
+			preparedStatement.setString(1, GetCode.getDormNoteCode());
 			preparedStatement.setString(2, "换宿申请通知");
 			preparedStatement.setString(3, "您与"+t_id+"的交换宿舍由管理员最终确认完成！本次换宿结束！");
 			preparedStatement.setString(4, time);
