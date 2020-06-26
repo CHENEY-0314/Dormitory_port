@@ -144,18 +144,20 @@ public class studentDAO {
 		Connection connection = DBManager.getConnection();
 		PreparedStatement preparedStatement = null;
 		StringBuilder sqlStatement = new StringBuilder();
-		sqlStatement.append("delete from Intention where s_id=?");
+		sqlStatement.append("insert into Intention (s_id,occupied) values (?,?)");
 
 		try {
 			preparedStatement = connection.prepareStatement(sqlStatement.toString());
 			preparedStatement.setString(1, s_id);
+			preparedStatement.setString(2, "0");
+
 			preparedStatement.executeUpdate();
 			} catch (SQLException ex) {
 			} finally {
 				DBManager.closeAll(connection, preparedStatement);
 				}
 		}
-
+		
 	//获取当前学生的通知
 	@SuppressWarnings("finally")
 	public static JSONObject GetNote(String s_id){

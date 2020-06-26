@@ -79,7 +79,7 @@ public class AdmDAO {
 	public static JSONObject GetFixApply(){
 
 		StringBuilder sql1 = new StringBuilder();
-		sql1.append("SELECT * FROM MaintenanceRecord a NATURAL JOIN (SELECT fix_code,MAX(mainstate) as state,MAX(time) as time FROM MaintenanceRecordState GROUP BY fix_code HAVING MAX(mainstate)='1' or MAX(mainstate) ='2') b");
+		sql1.append("SELECT * FROM LiveRecord NATURAL JOIN (SELECT * FROM MaintenanceRecord a NATURAL JOIN (SELECT fix_code,MAX(mainstate) as state,MAX(time) as time FROM MaintenanceRecordState GROUP BY fix_code HAVING MAX(mainstate)='1' or MAX(mainstate) ='2') b) d");
 		
 		Connection connection = DBManager.getConnection();
 		PreparedStatement preparedStatement = null;
@@ -92,6 +92,8 @@ public class AdmDAO {
 			preparedStatement = connection.prepareStatement(sql1.toString());
 			resultSet = preparedStatement.executeQuery();
 				for(int i = 1;resultSet.next();i++) {
+					message.put("building", resultSet.getString("building"));
+					message.put("room_num", resultSet.getString("room_num"));
 					message.put("fix_code", resultSet.getString("fix_code"));
 					message.put("s_id", resultSet.getString("s_id"));
 					message.put("maintenance", resultSet.getString("maintenance"));
@@ -121,7 +123,7 @@ public class AdmDAO {
 		StringBuilder sqlStatement2 = new StringBuilder();
 		sqlStatement1.append("insert into MaintenanceRecordState values (?, ?, ?)");
 		sqlStatement2.append("insert into Note values(?, ?, ? ,?, ?)");
-		
+
 		String code = GetCode.getFixNoteCode();
 		
 		try {
@@ -166,7 +168,7 @@ public class AdmDAO {
 		StringBuilder sqlStatement2 = new StringBuilder();
 		sqlStatement1.append("insert into MaintenanceRecordState values (?, ?, ?)");
 		sqlStatement2.append("insert into Note values(?, ?, ? ,?, ?)");
-		
+
 		String code = GetCode.getFixNoteCode();
 		
 		try {
@@ -211,7 +213,7 @@ public class AdmDAO {
 		StringBuilder sqlStatement2 = new StringBuilder();
 		sqlStatement1.append("delete from MaintenanceRecord where fix_code=?");
 		sqlStatement2.append("insert into Note values(?, ?, ? ,?, ?)");
-		
+
 		String code = GetCode.getFixNoteCode();
 		
 		try {

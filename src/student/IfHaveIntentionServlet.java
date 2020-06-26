@@ -10,8 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONObject;
 
-//这个接口用于改变用户换宿意向，若已经有换宿意向则删除，若无则添加换宿意向
-public class ChangeIntentionServlet extends HttpServlet {
+public class IfHaveIntentionServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 		 throws ServletException, IOException {
@@ -28,27 +27,12 @@ public class ChangeIntentionServlet extends HttpServlet {
 		try (PrintWriter out = response.getWriter()) {
 			//从浏览器url获取的参数
 			String s_id = request.getParameter("s_id").trim();
-			String password = request.getParameter("password").trim();
 			
 			JSONObject jsonObject = new JSONObject();
-			Boolean verifyResult = verifyLogin(s_id, password);
-			if(verifyResult){    //验证通过才能进行信息查询，返回的是json格式的数据
-				jsonObject = studentDAO.IfInIntention(s_id);
-				if(jsonObject.getString("result").equals("false")){
-					studentDAO.JoinIntention(s_id);
-				}else{
-					if(jsonObject.getString("result").equals("0")){
-					studentDAO.ExitIntention(s_id);
-					}
-				}
-			}
+			jsonObject = studentDAO.IfInIntention(s_id);
+			
 			out.write(jsonObject.toString());
 		}
 	}
-	
-	private Boolean verifyLogin(String s_id, String password) {
-		student user = studentDAO.queryUser(s_id);
-		//账户密码验证
-		return null != user && password.equals(user.getPassword());
-		}
+
 }

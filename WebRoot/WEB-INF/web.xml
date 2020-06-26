@@ -193,6 +193,18 @@
     <servlet-name>ExchangeGetMyAppServlet</servlet-name>
     <servlet-class>student.ExchangeGetMyAppServlet</servlet-class>
   </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>IfHaveIntentionServlet</servlet-name>
+    <servlet-class>student.IfHaveIntentionServlet</servlet-class>
+  </servlet>
+
+
+
+
+
+
 
 
 
@@ -320,6 +332,10 @@
   <servlet-mapping>
     <servlet-name>ExchangeGetMyAppServlet</servlet-name>
     <url-pattern>/servlet/ExchangeGetMyAppServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>IfHaveIntentionServlet</servlet-name>
+    <url-pattern>/servlet/IfHaveIntentionServlet</url-pattern>
   </servlet-mapping>
   
   

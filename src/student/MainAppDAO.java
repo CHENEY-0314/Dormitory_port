@@ -137,7 +137,7 @@ public class MainAppDAO {
 		StringBuilder sqlStatement2 = new StringBuilder();
 		sqlStatement1.append("insert into MaintenanceRecordState values (?, ?, ?)");
 		sqlStatement2.append("insert into Note values(?, ?, ? ,?, ?)");
-		
+
 		String code = GetCode.getFixNoteCode();
 		
 		try {
