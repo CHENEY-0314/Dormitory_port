@@ -32,7 +32,7 @@ public class ExchangeGetExchangeAppServlet extends HttpServlet {
 			JSONObject jsonObject = new JSONObject();
 			Boolean verifyResult = verifyLogin(s_id, password);
 			if(verifyResult){    //验证通过才能进行信息查询，返回的是json格式的数据
-				jsonObject = ExchangeApplyDAO.getMyApply(s_id);
+				jsonObject = ExchangeApplyDAO.getApply(s_id);
 			}
 			out.write(jsonObject.toString());
 		}
