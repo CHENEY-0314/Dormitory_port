@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONObject;
 
-public class ExchangeGetExchangeAppServlet extends HttpServlet {
+public class ExchangeGetMyAppServlet extends HttpServlet{
 
 	//http://localhost:8080/Dormitory/servlet/ExchangeGetMyAppServlet?s_id=201830660174&password=123456
 	
@@ -32,7 +32,7 @@ public class ExchangeGetExchangeAppServlet extends HttpServlet {
 			JSONObject jsonObject = new JSONObject();
 			Boolean verifyResult = verifyLogin(s_id, password);
 			if(verifyResult){    //验证通过才能进行信息查询，返回的是json格式的数据
-				jsonObject = ExchangeApplyDAO.getMyApply(s_id);
+				jsonObject = ExchangeApplyDAO.getApply(s_id);
 			}
 			out.write(jsonObject.toString());
 		}

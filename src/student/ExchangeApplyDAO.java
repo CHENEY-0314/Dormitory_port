@@ -289,6 +289,44 @@ public class ExchangeApplyDAO {
 	    return jsonObject;
 	}
 	
+	public static JSONObject getMyApply(String id){
+		StringBuilder sql1 = new StringBuilder();
+		sql1.append("SELECT * FROM ApplyRecord a NATURAL JOIN (SELECT change_code,MAX(appstate) as state,MAX(time) as time FROM ApplyRecordState GROUP BY change_code HAVING MAX(appstate)='1' or MAX(appstate)='2' or MAX(appstate) ='3' or MAX(appstate) ='4') b where s_id=?");
+		
+		Connection connection = DBManager.getConnection();
+		PreparedStatement preparedStatement = null;
+	    ResultSet resultSet = null;
+        Map<String, String> message = new HashMap<>();
+
+	    JSONObject jsonObject = new JSONObject();
+	    
+	    try {
+			preparedStatement = connection.prepareStatement(sql1.toString());
+			preparedStatement.setString(1, id);
+			resultSet = preparedStatement.executeQuery();
+				for(int i = 1;resultSet.next();i++) {
+					message.put("change_code", resultSet.getString("change_code"));
+					message.put("s_id", resultSet.getString("s_id"));
+					message.put("building", resultSet.getString("building"));
+					message.put("room_num", resultSet.getString("room_num"));
+					message.put("bed_num", resultSet.getString("bed_num"));
+					message.put("contact", resultSet.getString("contact"));
+					message.put("target_id", resultSet.getString("target_id"));
+					message.put("tbuilding", resultSet.getString("tbuilding"));
+					message.put("troom_num", resultSet.getString("troom_num"));
+					message.put("tbed_num", resultSet.getString("tbed_num"));
+					message.put("tcontact", resultSet.getString("tcontact"));
+					message.put("state", resultSet.getString("state"));
+					message.put("time", resultSet.getString("time"));
+					jsonObject.put(i, message);
+					}
+	    	} catch (SQLException ex) {
+	    		Logger.getLogger(MainAppDAO.class.getName()).log(Level.SEVERE, null, ex);
+	        	}
+	    DBManager.closeAll(connection, preparedStatement, resultSet);
+	    return jsonObject;
+	}
+	
 	public static boolean exchangeFinish(String change_code, String s_id, String t_id, String time){
 		//连接数据库
 		Connection connection = DBManager.getConnection();
