@@ -14,7 +14,7 @@ import net.sf.json.JSONObject;
 
 public class ExchangeSubmitServlet extends HttpServlet{
 
-//http://localhost:8080/Dormitory/servlet/ChangeSubmitServlet?s_id=201830660178&password=123456&target_id=201830660174&building=C10&room_num=145&bed_num=1&contact=13502246751&tbuilding=C11&troom_num=121&tbed_num=3&tcontact=13502243751&time=2020:06:12:12:33
+//http://localhost:8080/Dormitory/servlet/ExchangeSubmitServlet?s_id=201830660173&password=123456&target_id=201830660175&building=C11&room_num=126&bed_num=4&contact=13502246751&tbuilding=C10&troom_num=222&tbed_num=2&tcontact=13502243761&time=2000:06:12:12:33
 	private static final long serialVersionUID = 0L;
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -50,11 +50,11 @@ public class ExchangeSubmitServlet extends HttpServlet{
 			
 			
 			if (verifyResult) {
-				if(ExchangeApplyDAO.SubmitExchangeApp(ID,target_id,building,room_num,bed_num,t_building,t_room_num,t_bed_num,contact,t_contact,time)) 
-					params.put("Result", "success");
-				else params.put("Result", "failed");
+				String code = ExchangeApplyDAO.SubmitExchangeApp(ID, target_id, building, room_num, bed_num, t_building, t_room_num, t_bed_num, contact, t_contact, time);
+				if(code != null) params.put("result", "success "+code);
+				else params.put("result", "failed");
 				} else {
-					params.put("Result", "Login failed");
+					params.put("result", "failed");
 					}
 			jsonObject.put("params", params);
 			out.write(jsonObject.toString());

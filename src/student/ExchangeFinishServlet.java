@@ -10,28 +10,35 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONObject;
 
-public class ExchangeScreenServlet extends HttpServlet {
+public class ExchangeFinishServlet extends HttpServlet {
 
-	private static final long serialVersionUID = 11L;
+	private static final long serialVersionUID = 2L;
 	
-	// http://localhost:8080/Dormitory/servlet/ExchangeScreenServlet?building=C11&floor=1;2&bed_num=0   (0代表随意)
+// http://localhost:8080/Dormitory/servlet/ExchangeFinishServlet?change_code=8000&s_id=201830660178&target_id=201830660174&time=2028:06:24:10:00
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException{
-		// 设置响应内容类型  
+
 		response.setContentType("text/html;charset=utf-8");
 		request.setCharacterEncoding("utf-8");
 		response.setCharacterEncoding("utf-8");
 				
 		try (PrintWriter out = response.getWriter()) {
-
-			String building = request.getParameter("building").trim();
-			String[] floor = request.getParameter("floor").trim().split(";");
-			String[] bed_num = request.getParameter("bed_num").trim().split(";");
+			
+			String change_code = request.getParameter("change_code").trim();
+			String s_id = request.getParameter("s_id").trim();
+			String t_id = request.getParameter("target_id").trim();
+			String time = request.getParameter("time").trim();			
 
 			JSONObject jsonObject = new JSONObject();
-			jsonObject = ExchangeApplyDAO.ChangeScreen(building, floor, bed_num);
+
+			boolean result = ExchangeApplyDAO.exchangeFinish(change_code, s_id, t_id, time);
  
+			if (result) {
+				jsonObject.put("result", "success");
+				} else {
+					jsonObject.put("result", "failed");
+					}
  			out.write(jsonObject.toString());
 			}
 		}
@@ -41,5 +48,5 @@ public class ExchangeScreenServlet extends HttpServlet {
 			throws ServletException, IOException{
 		doPost(request, response);
 	}
-
+	
 }

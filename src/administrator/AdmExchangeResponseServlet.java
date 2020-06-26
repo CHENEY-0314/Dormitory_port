@@ -1,4 +1,4 @@
-package student;
+package administrator;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -12,14 +12,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONObject;
 
-public class ExchangeTargetResponseServlet extends HttpServlet {
-	
-	/**
-	 * 
-	 */
+public class AdmExchangeResponseServlet extends HttpServlet {
+
 	private static final long serialVersionUID = 1L;
 
-	// http://localhost:8080/Dormitory/servlet/ExchangeTargetResponseServlet?change_code=7011&target_id=201830660174&s_id=201830660178&time=2018:06:24:10:00&agree=0   (1代表同意，0代表不同意)
+	// http://localhost:8080/Dormitory/servlet/AdmExchangeResponseServlet?a_id=000001&password=123456&change_code=8000&s_id=201830660178&target_id=201830660174&time=2018:06:24:10:00&agree=0   (1代表同意，0代表不同意)
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException{
@@ -30,32 +27,35 @@ public class ExchangeTargetResponseServlet extends HttpServlet {
 				
 		try (PrintWriter out = response.getWriter()) {
 			
-			String code = request.getParameter("change_code").trim();
+			String a_id = request.getParameter("a_id").trim();
+			String password = request.getParameter("password").trim();
+			String change_code = request.getParameter("change_code").trim();
+			String time = request.getParameter("time").trim();
+			String agree = request.getParameter("agree").trim();
 			String target_id = request.getParameter("target_id").trim();
 			String s_id = request.getParameter("s_id").trim();
-			String agree = request.getParameter("agree").trim();
-			String time = request.getParameter("time").trim();
-
+			
 			Map<String, String> params = new HashMap<>();
 			JSONObject jsonObject = new JSONObject();
-			
-			boolean result = ExchangeApplyDAO.targetResponse(code, target_id, s_id, time, agree);
- 
-			if (result) {
-				params.put("result", "success");
-				} else {
-					params.put("result", "failed");
-					}
- 
+			Boolean verifyResult = verifyLogin(a_id, password);
+			if(verifyResult){    //验证通过才能进行信息查询，返回的是json格式的数据
+				if(AdmDAO.admResponseExchangeApply(change_code, agree, time, target_id, s_id)) params.put("result", "success");
+				else params.put("result", "failed");
+			}
 			jsonObject.put("params", params);
 			out.write(jsonObject.toString());
-			}
 		}
+	}
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException{
 		doPost(request, response);
 	}
-
+	
+	private Boolean verifyLogin(String a_id, String password) {
+		administrator user = AdmLoginDAO.queryAdm(a_id);
+		//账户密码验证
+		return null != user && password.equals(user.getA_password());
+		}
 }

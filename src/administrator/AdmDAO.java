@@ -10,6 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sf.json.JSONObject;
+import student.ExchangeApplyDAO;
 import student.MainAppDAO;
 import DBManagerr.DBManager;
 
@@ -245,7 +246,7 @@ public class AdmDAO {
 	public static JSONObject GetChangeApply(){
 
 		StringBuilder sql1 = new StringBuilder();
-		sql1.append("SELECT * FROM ApplyRecord a NATURAL JOIN (SELECT change_code,MAX(appstate) as state,MAX(time) as time FROM ApplyRecordState GROUP BY change_code HAVING MAX(appstate)='2' or MAX(appstate) ='3') b");
+		sql1.append("SELECT * FROM ApplyRecord a NATURAL JOIN (SELECT change_code,MAX(appstate) as state,MAX(time) as time FROM ApplyRecordState GROUP BY change_code HAVING MAX(appstate)='1' or MAX(appstate)='2' or MAX(appstate) ='3' or MAX(appstate) ='4') b");
 		
 		Connection connection = DBManager.getConnection();
 		PreparedStatement preparedStatement = null;
@@ -279,4 +280,161 @@ public class AdmDAO {
 	    DBManager.closeAll(connection, preparedStatement, resultSet);
 	    return jsonObject;
 	    }
+
+	public static boolean admResponseExchangeApply(String change_code, String agree, String time, String t_id, String s_id) {
+		// 与数据库连接
+		Connection connection = DBManager.getConnection();
+		// 各种变量
+		PreparedStatement preparedStatement1 = null;
+		PreparedStatement preparedStatement2 = null;
+		PreparedStatement preparedStatement3 = null;
+		PreparedStatement preparedStatement4 = null;
+		PreparedStatement preparedStatement5 = null;
+		StringBuilder sqlStatement1 = new StringBuilder();
+		StringBuilder sqlStatement2 = new StringBuilder();
+		StringBuilder sqlStatement3 = new StringBuilder();
+		StringBuilder sqlStatement4 = new StringBuilder();
+		StringBuilder sqlStatement5 = new StringBuilder();
+		int result1 = 0, result2 = 0;
+		// 不管同意或不同意，都要更新通知列表和换宿记录状态表
+		sqlStatement1.append("insert into Note values(?, ?, ?, ?, ?)");
+		sqlStatement2.append("insert into ApplyRecordState values(?, ?, ?)");
+		sqlStatement3.append("delete from ApplyRecordState where change_code=?");
+		sqlStatement4.append("delete from ApplyRecord where change_code=?");
+		sqlStatement5.append("update Intention set occupied=? where s_id=? or s_id=?");
+        try {
+        	preparedStatement1 = connection.prepareStatement(sqlStatement1.toString());
+        	preparedStatement2 = connection.prepareStatement(sqlStatement2.toString());
+        	preparedStatement3 = connection.prepareStatement(sqlStatement3.toString());
+        	preparedStatement4 = connection.prepareStatement(sqlStatement4.toString());
+        	preparedStatement5 = connection.prepareStatement(sqlStatement5.toString());
+        	
+			if(agree.equals("0")){// 不同意，删除记录，向请求者发送通知
+				// 1.向换宿申请者发送通知
+				preparedStatement1.setString(1, GetCode.getDormNoteCode());
+				preparedStatement1.setString(2, "换宿申请通知");
+				preparedStatement1.setString(3, "你与:"+t_id+"的换宿申请被管理员拒绝!");
+				preparedStatement1.setString(4, time);
+				preparedStatement1.setString(5, s_id);
+				result1 = preparedStatement1.executeUpdate();
+				preparedStatement1.close();
+				// 2.向换宿接受者发送通知
+				preparedStatement1 = connection.prepareStatement(sqlStatement1.toString());
+				preparedStatement1.setString(1, GetCode.getDormNoteCode());
+				preparedStatement1.setString(2, "换宿申请通知");
+				preparedStatement1.setString(3, "你与:"+s_id+"的换宿申请被管理员拒绝!");
+				preparedStatement1.setString(4, time);
+				preparedStatement1.setString(5, t_id);
+				result1 = preparedStatement1.executeUpdate();
+				preparedStatement1.close();
+				
+				// 改变状态
+				preparedStatement3.setString(1, change_code);
+				preparedStatement4.setString(1, change_code);
+				result2 = preparedStatement3.executeUpdate()+preparedStatement4.executeUpdate();
+				preparedStatement3.close();
+				
+				// 设occupied为0
+				preparedStatement5.setString(1, "1");
+				preparedStatement5.setString(2, s_id);	
+				preparedStatement5.setString(3, t_id);	
+				result2 += preparedStatement5.executeUpdate();
+				preparedStatement5.close();
+			}else{// 同意，状态变为2，向请求者发送通知
+				// 1.向换宿申请者发送通知
+				preparedStatement1.setString(1, GetCode.getDormNoteCode());
+				preparedStatement1.setString(2, "换宿申请通知");
+				preparedStatement1.setString(3, "管理员同意你与:"+t_id+"的换宿申请，请尽快完成交换宿舍。");
+				preparedStatement1.setString(4, time);
+				preparedStatement1.setString(5, s_id);
+				result1 = preparedStatement1.executeUpdate();
+				preparedStatement1.close();
+				// 1.向换宿接受者发送通知
+				preparedStatement1 = connection.prepareStatement(sqlStatement1.toString());
+				preparedStatement1.setString(1, GetCode.getDormNoteCode());
+				preparedStatement1.setString(2, "换宿申请通知");
+				preparedStatement1.setString(3, "管理员同意你与:"+s_id+"的换宿申请，请尽快完成交换宿舍。");
+				preparedStatement1.setString(4, time);
+				preparedStatement1.setString(5, t_id);
+				result1 = preparedStatement1.executeUpdate();
+				preparedStatement1.close();
+				
+				// 改变状态
+				preparedStatement2.setString(1, change_code);
+				preparedStatement2.setString(2, time);
+				preparedStatement2.setString(3, "3");
+				result2 = preparedStatement2.executeUpdate();
+				preparedStatement2.close();
+			}
+			return result1 != 0 && result2 != 0;
+			
+			} catch (SQLException ex) {
+				Logger.getLogger(ExchangeApplyDAO.class.getName()).log(Level.SEVERE, null, ex);
+				return false;
+			} finally {
+				DBManager.closeAll(connection, preparedStatement2);
+				}
+	}
+	
+	public static boolean exchangeConfirm(String change_code, String s_id, String t_id, String time){
+		//连接数据库
+		Connection connection = DBManager.getConnection();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		int result1 = 0, result2 = 0;
+
+		StringBuilder sqlStatement1 = new StringBuilder();
+		StringBuilder sqlStatement2 = new StringBuilder();
+		StringBuilder sqlStatement3 = new StringBuilder();
+		StringBuilder sqlStatement4 = new StringBuilder();
+		sqlStatement1.append("delete from ApplyRecordState where change_code=?");
+		sqlStatement2.append("delete from ApplyRecord where change_code=?");
+		sqlStatement3.append("insert into Note values(?, ?, ? ,?, ?)");
+		sqlStatement4.append("update Intention set occupied=? where s_id=? or s_id=?");
+		
+		try {
+			// 在数据库中删除记录
+			preparedStatement = connection.prepareStatement(sqlStatement1.toString());
+			preparedStatement.setString(1, change_code);
+			result1 = preparedStatement.executeUpdate();
+			preparedStatement.close();
+			preparedStatement = connection.prepareStatement(sqlStatement2.toString());
+			preparedStatement.setString(1, change_code);
+			result1 += preparedStatement.executeUpdate();
+			preparedStatement.close();
+			// 发送通知
+			preparedStatement = connection.prepareStatement(sqlStatement3.toString());
+			preparedStatement.setString(1, GetCode.getFixNoteCode());
+			preparedStatement.setString(2, "换宿申请通知");
+			preparedStatement.setString(3, "您与"+s_id+"的交换宿舍由管理员最终确认完成！本次换宿结束！");
+			preparedStatement.setString(4, time);
+			preparedStatement.setString(5, t_id);
+			result2 = preparedStatement.executeUpdate();
+			preparedStatement.close();
+			preparedStatement = connection.prepareStatement(sqlStatement3.toString());
+			preparedStatement.setString(1, GetCode.getFixNoteCode());
+			preparedStatement.setString(2, "换宿申请通知");
+			preparedStatement.setString(3, "您与"+t_id+"的交换宿舍由管理员最终确认完成！本次换宿结束！");
+			preparedStatement.setString(4, time);
+			preparedStatement.setString(5, s_id);
+			result2 += preparedStatement.executeUpdate();
+			preparedStatement.close();
+			// 将occupied设为0
+			preparedStatement = connection.prepareStatement(sqlStatement4.toString());
+			preparedStatement.setString(1, "1");
+			preparedStatement.setString(2, s_id);	
+			preparedStatement.setString(3, t_id);	
+			result2 += preparedStatement.executeUpdate();
+			
+			if(result1 != 0 && result2 != 0){
+				return true;
+			} else return false;
+		}
+		catch (SQLException ex) {
+			Logger.getLogger(AdmDAO.class.getName()).log(Level.SEVERE, null, ex);
+				return false;
+			} finally {
+				DBManager.closeAll(connection, preparedStatement,resultSet);   
+			}
+	}
 }

@@ -157,8 +157,36 @@
     <servlet-name>AdmGetExchangeAppServlet</servlet-name>
     <servlet-class>administrator.AdmGetExchangeAppServlet</servlet-class>
   </servlet>
-
-
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>ExchangeGetExchangeAppServlet</servlet-name>
+    <servlet-class>student.ExchangeGetExchangeAppServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>AdmExchangeResponseServlet</servlet-name>
+    <servlet-class>administrator.AdmExchangeResponseServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>ExchangeFinishServlet</servlet-name>
+    <servlet-class>student.ExchangeFinishServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>ExchangeConfirmServlet</servlet-name>
+    <servlet-class>administrator.ExchangeConfirmServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <description>This is the description of my J2EE component</description>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <servlet-name>ExchangingServlet</servlet-name>
+    <servlet-class>student.ExchangingServlet</servlet-class>
+  </servlet>
 
 
 
@@ -264,7 +292,26 @@
     <servlet-name>AdmGetExchangeAppServlet</servlet-name>
     <url-pattern>/servlet/AdmGetExchangeAppServlet</url-pattern>
   </servlet-mapping>
-  
+  <servlet-mapping>
+    <servlet-name>ExchangeGetExchangeAppServlet</servlet-name>
+    <url-pattern>/servlet/ExchangeGetExchangeAppServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>AdmExchangeResponseServlet</servlet-name>
+    <url-pattern>/servlet/AdmExchangeResponseServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>ExchangeFinishServlet</servlet-name>
+    <url-pattern>/servlet/ExchangeFinishServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>ExchangeConfirmServlet</servlet-name>
+    <url-pattern>/servlet/ExchangeConfirmServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>ExchangingServlet</servlet-name>
+    <url-pattern>/servlet/ExchangingServlet</url-pattern>
+  </servlet-mapping>
   
   
   
