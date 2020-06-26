@@ -91,53 +91,55 @@ public class studentDAO {
 	}
 		
 	//进入换宿意向
-	public static void JoinIntention(String s_id){
+	  public static void JoinIntention(String s_id){
+	 
+	  Connection connection = DBManager.getConnection();
+	  PreparedStatement preparedStatement = null;
 
-	Connection connection = DBManager.getConnection();
-	PreparedStatement preparedStatement = null;
+	  StringBuilder sqlStatement = new StringBuilder();
+	  sqlStatement.append("insert into Intention (s_id,occupied) values (?,?)");
 
-	StringBuilder sqlStatement = new StringBuilder();
-	sqlStatement.append("insert into Intention (s_id) values (?)");
+	  try {
+	   preparedStatement = connection.prepareStatement(sqlStatement.toString());
+	   preparedStatement.setString(1, s_id);
+	   preparedStatement.setString(2, "0");
 
-	try {
-		preparedStatement = connection.prepareStatement(sqlStatement.toString());
-		preparedStatement.setString(1, s_id);
-		preparedStatement.executeUpdate();
-		} catch (SQLException ex) {
-		} finally {
-			DBManager.closeAll(connection, preparedStatement);
-			}
-	}
+	   preparedStatement.executeUpdate();
+	   } catch (SQLException ex) {
+	   } finally {
+	    DBManager.closeAll(connection, preparedStatement);
+	    }
+	  }
 	
 	//判断是否已经加入换宿意向
-	public static JSONObject IfInIntention(String s_id){
+	  public static JSONObject IfInIntention(String s_id){
 
-		StringBuilder sql1 = new StringBuilder();
-		sql1.append("select s_id from Intention where s_id=?");      
-			
-		Connection connection = DBManager.getConnection();
-		PreparedStatement preparedStatement = null;
-	    ResultSet resultSet = null;
+	   StringBuilder sql1 = new StringBuilder();
+	   sql1.append("select * from Intention where s_id=?");      
+	    
+	   Connection connection = DBManager.getConnection();
+	   PreparedStatement preparedStatement = null;
+	      ResultSet resultSet = null;
 
-	    JSONObject jsonObject = new JSONObject();
+	      JSONObject jsonObject = new JSONObject();
+	      
+	      
+	      try {
+	    preparedStatement = connection.prepareStatement(sql1.toString());
+	    preparedStatement.setString(1, s_id);
+	    resultSet = preparedStatement.executeQuery();          
 	    
-	    
-	    try {
-			preparedStatement = connection.prepareStatement(sql1.toString());
-			preparedStatement.setString(1, s_id);
-			resultSet = preparedStatement.executeQuery();          
-			
-	    	if (resultSet.next()) {                              
-	    		jsonObject.put("result", "true");  //已经加入意向
-	    		} else {
-	    			jsonObject.put("result", "false");  //没有加入意向
-	    			}
-	    	} catch (SQLException ex) {
-	    		Logger.getLogger(studentDAO.class.getName()).log(Level.SEVERE, null, ex);
-	        	}
-	    DBManager.closeAll(connection, preparedStatement, resultSet);
-	    return jsonObject;
-	    }
+	       if (resultSet.next()) { 
+	        jsonObject.put("result", resultSet.getString("occupied"));  //已经加入意向 返回是否被占用
+	        } else {
+	         jsonObject.put("result", "false");  //没有加入意向
+	         }
+	       } catch (SQLException ex) {
+	        Logger.getLogger(studentDAO.class.getName()).log(Level.SEVERE, null, ex);
+	           }
+	      DBManager.closeAll(connection, preparedStatement, resultSet);
+	      return jsonObject;
+	      }
 			
 	//退出换宿意向
 	public static void ExitIntention(String s_id){
