@@ -51,7 +51,7 @@ public class ExchangeSubmitServlet extends HttpServlet{
 			
 			if (verifyResult) {
 				String code = ExchangeApplyDAO.SubmitExchangeApp(ID, target_id, building, room_num, bed_num, t_building, t_room_num, t_bed_num, contact, t_contact, time);
-				if(code != null) params.put("result", "success "+code);
+				if(code != null) params.put("result", "success;"+code);
 				else params.put("result", "failed");
 				} else {
 					params.put("result", "failed");
