@@ -248,7 +248,7 @@ public class AdmDAO {
 	public static JSONObject GetChangeApply(){
 
 		StringBuilder sql1 = new StringBuilder();
-		sql1.append("SELECT * FROM ApplyRecord a NATURAL JOIN (SELECT change_code,MAX(appstate) as state,MAX(time) as time FROM ApplyRecordState GROUP BY change_code HAVING MAX(appstate)='1' or MAX(appstate)='2' or MAX(appstate) ='3' or MAX(appstate) ='4') b");
+		sql1.append("SELECT * FROM ApplyRecord a NATURAL JOIN (SELECT change_code,MAX(appstate) as state,MAX(time) as time FROM ApplyRecordState GROUP BY change_code HAVING MAX(appstate)='2' or MAX(appstate) ='3' or MAX(appstate) ='4') b");
 		
 		Connection connection = DBManager.getConnection();
 		PreparedStatement preparedStatement = null;
@@ -263,11 +263,15 @@ public class AdmDAO {
 				for(int i = 1;resultSet.next();i++) {
 					message.put("change_code", resultSet.getString("change_code"));
 					message.put("s_id", resultSet.getString("s_id"));
+					message.put("name", resultSet.getString("name"));
+					message.put("sex", resultSet.getString("sex"));
 					message.put("building", resultSet.getString("building"));
 					message.put("room_num", resultSet.getString("room_num"));
 					message.put("bed_num", resultSet.getString("bed_num"));
 					message.put("contact", resultSet.getString("contact"));
 					message.put("target_id", resultSet.getString("target_id"));
+					message.put("tname", resultSet.getString("tname"));
+					message.put("tsex", resultSet.getString("tsex"));
 					message.put("t_building", resultSet.getString("tbuilding"));
 					message.put("t_room_num", resultSet.getString("troom_num"));
 					message.put("t_bed_num", resultSet.getString("tbed_num"));
@@ -283,7 +287,7 @@ public class AdmDAO {
 	    return jsonObject;
 	    }
 
-	public static boolean admResponseExchangeApply(String change_code, String agree, String time, String t_id, String s_id) {
+	public static boolean admResponseExchangeApply(String change_code, String agree, String time, String t_id, String tname, String s_id, String name) {
 		// 与数据库连接
 		Connection connection = DBManager.getConnection();
 		// 各种变量
@@ -315,7 +319,7 @@ public class AdmDAO {
 				// 1.向换宿申请者发送通知
 				preparedStatement1.setString(1, GetCode.getDormNoteCode());
 				preparedStatement1.setString(2, "换宿申请通知");
-				preparedStatement1.setString(3, "你与:"+t_id+"的换宿申请被管理员拒绝!");
+				preparedStatement1.setString(3, "你与"+tname+"的换宿申请被管理员拒绝!");
 				preparedStatement1.setString(4, time);
 				preparedStatement1.setString(5, s_id);
 				result1 = preparedStatement1.executeUpdate();
@@ -324,7 +328,7 @@ public class AdmDAO {
 				preparedStatement1 = connection.prepareStatement(sqlStatement1.toString());
 				preparedStatement1.setString(1, GetCode.getDormNoteCode());
 				preparedStatement1.setString(2, "换宿申请通知");
-				preparedStatement1.setString(3, "你与:"+s_id+"的换宿申请被管理员拒绝!");
+				preparedStatement1.setString(3, "你与:"+name+"的换宿申请被管理员拒绝!");
 				preparedStatement1.setString(4, time);
 				preparedStatement1.setString(5, t_id);
 				result1 = preparedStatement1.executeUpdate();
@@ -337,7 +341,7 @@ public class AdmDAO {
 				preparedStatement3.close();
 				
 				// 设occupied为0
-				preparedStatement5.setString(1, "1");
+				preparedStatement5.setString(1, "0");
 				preparedStatement5.setString(2, s_id);	
 				preparedStatement5.setString(3, t_id);	
 				result2 += preparedStatement5.executeUpdate();
@@ -346,7 +350,7 @@ public class AdmDAO {
 				// 1.向换宿申请者发送通知
 				preparedStatement1.setString(1, GetCode.getDormNoteCode());
 				preparedStatement1.setString(2, "换宿申请通知");
-				preparedStatement1.setString(3, "管理员同意你与:"+t_id+"的换宿申请，请尽快完成交换宿舍。");
+				preparedStatement1.setString(3, "管理员同意你与"+tname+"的换宿申请，请尽快完成交换宿舍。");
 				preparedStatement1.setString(4, time);
 				preparedStatement1.setString(5, s_id);
 				result1 = preparedStatement1.executeUpdate();
@@ -355,7 +359,7 @@ public class AdmDAO {
 				preparedStatement1 = connection.prepareStatement(sqlStatement1.toString());
 				preparedStatement1.setString(1, GetCode.getDormNoteCode());
 				preparedStatement1.setString(2, "换宿申请通知");
-				preparedStatement1.setString(3, "管理员同意你与:"+s_id+"的换宿申请，请尽快完成交换宿舍。");
+				preparedStatement1.setString(3, "管理员同意你与"+name+"的换宿申请，请尽快完成交换宿舍。");
 				preparedStatement1.setString(4, time);
 				preparedStatement1.setString(5, t_id);
 				result1 = preparedStatement1.executeUpdate();
@@ -378,7 +382,7 @@ public class AdmDAO {
 				}
 	}
 	
-	public static boolean exchangeConfirm(String change_code, String s_id, String t_id, String time){
+	public static boolean exchangeConfirm(String change_code, String s_id, String name, String t_id, String tname, String time){
 		//连接数据库
 		Connection connection = DBManager.getConnection();
 		PreparedStatement preparedStatement = null;
@@ -408,7 +412,7 @@ public class AdmDAO {
 			preparedStatement = connection.prepareStatement(sqlStatement3.toString());
 			preparedStatement.setString(1, GetCode.getDormNoteCode());
 			preparedStatement.setString(2, "换宿申请通知");
-			preparedStatement.setString(3, "您与"+s_id+"的交换宿舍由管理员最终确认完成！本次换宿结束！");
+			preparedStatement.setString(3, "您与"+name+"的交换宿舍由管理员最终确认完成！本次换宿结束！");
 			preparedStatement.setString(4, time);
 			preparedStatement.setString(5, t_id);
 			result2 = preparedStatement.executeUpdate();
@@ -416,7 +420,7 @@ public class AdmDAO {
 			preparedStatement = connection.prepareStatement(sqlStatement3.toString());
 			preparedStatement.setString(1, GetCode.getDormNoteCode());
 			preparedStatement.setString(2, "换宿申请通知");
-			preparedStatement.setString(3, "您与"+t_id+"的交换宿舍由管理员最终确认完成！本次换宿结束！");
+			preparedStatement.setString(3, "您与"+tname+"的交换宿舍由管理员最终确认完成！本次换宿结束！");
 			preparedStatement.setString(4, time);
 			preparedStatement.setString(5, s_id);
 			result2 += preparedStatement.executeUpdate();

@@ -9,6 +9,16 @@ public class student {
     //用户密码
     private String Password;
     
+    public student(){
+    	
+    }
+    
+    public student(String a1, String a2){
+    	StudentNumber = a1;
+    	StudentName = a2;
+//    	Password = a3;
+    }
+    
     public String getStudentNumber() {
         return StudentNumber;
     }

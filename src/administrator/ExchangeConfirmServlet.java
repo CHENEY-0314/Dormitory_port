@@ -14,7 +14,7 @@ public class ExchangeConfirmServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 2L;
 	
-	// http://localhost:8080/Dormitory/servlet/ExchangeConfirmServlet?change_code=8000&s_id=201830660178&target_id=201830660174&time=2029:06:24:10:00
+	// http://localhost:8080/Dormitory/servlet/ExchangeConfirmServlet?change_code=8000&s_id=201830660178&name=陈晓杰&target_id=201830660174&tname=张三&time=2029:06:24:10:00
 		@Override
 		protected void doPost(HttpServletRequest request, HttpServletResponse response) 
 				throws ServletException, IOException{
@@ -27,12 +27,14 @@ public class ExchangeConfirmServlet extends HttpServlet {
 				
 				String change_code = request.getParameter("change_code").trim();
 				String s_id = request.getParameter("s_id").trim();
+				String name = request.getParameter("name").trim();
 				String t_id = request.getParameter("target_id").trim();
+				String tname = request.getParameter("tname").trim();
 				String time = request.getParameter("time").trim();			
 
 				JSONObject jsonObject = new JSONObject();
 
-				boolean result = AdmDAO.exchangeConfirm(change_code, s_id, t_id, time);
+				boolean result = AdmDAO.exchangeConfirm(change_code, s_id, name, t_id, tname, time);
 	 
 				if (result) {
 					jsonObject.put("result", "success");

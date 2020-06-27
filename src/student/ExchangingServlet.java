@@ -35,10 +35,9 @@ public class ExchangingServlet extends HttpServlet {
 				JSONObject jsonObject = new JSONObject();
 				Boolean verifyResult = verifyLogin(s_id, password);
 				if(verifyResult){    //验证通过才能进行信息查询，返回的是json格式的数据
-					if(!ExchangeApplyDAO.isExchanging(s_id)) message.put("result", "success");
+					if(ExchangeApplyDAO.isExchanging(s_id)) message.put("result", "success");
 					else message.put("result", "failed");
 				}
-				else message.put("result", "failed");
 				jsonObject.put("params", message);
 				out.write(jsonObject.toString());
 			}
