@@ -427,7 +427,7 @@ public class AdmDAO {
 			preparedStatement.close();
 			// 将occupied设为0
 			preparedStatement = connection.prepareStatement(sqlStatement4.toString());
-			preparedStatement.setString(1, "1");
+			preparedStatement.setString(1, "0");
 			preparedStatement.setString(2, s_id);	
 			preparedStatement.setString(3, t_id);	
 			result2 += preparedStatement.executeUpdate();

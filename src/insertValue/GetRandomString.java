@@ -1,6 +1,5 @@
 package insertValue;
 
-import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -51,6 +50,7 @@ public class GetRandomString {
 	// 随机生成12位学号
 	public static String getRandomID(){
 		String id = "";
+		Random r = new Random();
 		int random;//生成随机数
 		   do{
 			random = (int) (Math.random()*100000000);  //生成8位数的项目id
@@ -58,7 +58,9 @@ public class GetRandomString {
 			else if(random % 4 == 2) id = "2017"+random;
 			else if(random % 4 == 1) id = "2018"+random;
 			else if(random % 4 == 0) id = "2019"+random;
+			if(id.length() < 12) id += r.nextInt(10);
 		   }while(isIDExist(id));
+		
 		return id;
 	}
 	

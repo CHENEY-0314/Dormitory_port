@@ -2,6 +2,7 @@ package insertValue;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,6 +37,9 @@ public class DBValueServlet extends HttpServlet{
  
 			jsonObject.put("params", params);
 			out.write(jsonObject.toString());
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
  
